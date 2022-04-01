@@ -1,0 +1,29 @@
+version: "3"
+
+services: 
+  backend:
+    image: node
+    user: node
+    working_dir: /home/node/app
+    depends_on:
+      - database
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/home/node/app
+    ports:
+      - 8080:5000
+    command: "npm start"
+
+
+  database:
+    image: mariadb
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: 'museu'
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - ./database/conf:/etc/mysql/conf.d
+      - ./database/data:/var/lib/mysql

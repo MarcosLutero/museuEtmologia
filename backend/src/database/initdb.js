@@ -6,17 +6,18 @@ import Especime from "../models/museu/Especime";
 import Foto from "../models/museu/Foto";
 import Taxonomia from "../models/museu/Taxonomia";
 import Taxonomia_Especime from "../models/museu/Taxonomia_Especime";
+import Caracteristica_Taxonomia from "../models/museu/Caracteristica_Taxonomia";
 
 const initdb = () =>
   new Promise((resolve, reject) => {
     Denominacao.hasMany(Denominacao, {
       onDelete: "CASCADE",
       foreignKey: {
-        allowNull: false,
+        allowNull: true,
       },
     });
     Denominacao.belongsTo(Denominacao, {
-      onDelete: "RESTRICT",
+      onDelete: "CASCADE",
       foreignKey: {
         allowNull: true,
       },
@@ -58,6 +59,15 @@ const initdb = () =>
       },
     });
 
+
+    Caracteristica.belongsToMany(Especime, {
+      through: Caracteristica_Taxonomia,
+    });
+    Especime.belongsToMany(Caracteristica, {
+      through: Caracteristica_Taxonomia,
+    });
+
+
     Atributo.hasMany(Caracteristica, {
       onDelete: "CASCADE",
       foreignKey: {
@@ -72,7 +82,7 @@ const initdb = () =>
       },
     });
     const syncModels = async () => {
-      await MuseuSchema.sync();
+      await MuseuSchema.sync({force:true});
     };
     //resolve();
     syncModels()

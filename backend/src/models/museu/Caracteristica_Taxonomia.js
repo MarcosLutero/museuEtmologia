@@ -1,21 +1,17 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../../database/museu.js";
 
-const Denominacao = sequelize.define(
-  "Denominacao",
+const Caracteristica_Taxonomia = sequelize.define(
+  "Caracteristica_Taxonomia",
   {
-    denominacao: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
   },
   {
     paranoid: true,
-    tableName: "denominacao",
+    tableName: "caracteristica_taxonomia",
     underscored: true,
     freezeTableName: true,
     schema: "museu",
   }
 );
 
-export default Denominacao;
+export default Caracteristica_Taxonomia;
