@@ -60,10 +60,10 @@ const initdb = () =>
     });
 
 
-    Caracteristica.belongsToMany(Especime, {
+    Caracteristica.belongsToMany(Taxonomia, {
       through: Caracteristica_Taxonomia,
     });
-    Especime.belongsToMany(Caracteristica, {
+    Taxonomia.belongsToMany(Caracteristica, {
       through: Caracteristica_Taxonomia,
     });
 
