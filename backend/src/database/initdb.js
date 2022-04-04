@@ -22,8 +22,6 @@ const initdb = () =>
         allowNull: true,
       },
     });
-
-
     Denominacao.hasMany(Taxonomia, {
       onDelete: "CASCADE",
       foreignKey: {
@@ -36,16 +34,12 @@ const initdb = () =>
         allowNull: false,
       },
     });
-
-
     Taxonomia.belongsToMany(Especime, {
       through: Taxonomia_Especime,
     });
     Especime.belongsToMany(Taxonomia, {
       through: Taxonomia_Especime,
     });
-
-
     Especime.hasMany(Foto, {
       onDelete: "CASCADE",
       foreignKey: {
@@ -58,23 +52,18 @@ const initdb = () =>
         allowNull: false,
       },
     });
-
-
     Caracteristica.belongsToMany(Taxonomia, {
       through: Caracteristica_Taxonomia,
     });
     Taxonomia.belongsToMany(Caracteristica, {
       through: Caracteristica_Taxonomia,
     });
-
-
     Atributo.hasMany(Caracteristica, {
       onDelete: "CASCADE",
       foreignKey: {
         allowNull: false,
       },
     });
-
     Caracteristica.belongsTo(Atributo, {
       onDelete: "RESTRICT",
       foreignKey: {
@@ -82,7 +71,7 @@ const initdb = () =>
       },
     });
     const syncModels = async () => {
-      await MuseuSchema.sync({force:true});
+      await MuseuSchema.sync();
     };
     //resolve();
     syncModels()
