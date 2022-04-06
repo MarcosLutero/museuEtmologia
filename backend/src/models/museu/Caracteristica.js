@@ -16,6 +16,9 @@ const Caracteristica = sequelize.define(
   {
     paranoid: true,
     tableName: "caracteristica",
+    name: {
+      plural: 'Caracteristicas'
+    },
     underscored: true,
     freezeTableName: true,
     schema: "museu",

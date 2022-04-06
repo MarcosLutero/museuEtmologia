@@ -8,6 +8,11 @@ const Atributo = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    identificacao:{
+      type: DataTypes.ENUM('Descrição Morfológica', 'Descrição Biológica','Descrição Ecológica'),
+      allowNull: false,
+    }
+
   },
   {
     paranoid: true,

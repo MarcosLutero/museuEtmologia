@@ -1,14 +1,11 @@
 import express, { query } from "express";
 import { Op } from "sequelize";
-import Atributo from "../models/museu/Atributo";
-import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
-import Taxonomia from "../models/museu/Taxonomia";
+import Caracteristica from "../models/museu/Caracteristica";
+import Atributo from "../models/museu/Atributo";
+const caracteristicaRouter = express.Router();
 
-
-const taxonomiaRouter = express.Router();
-
-taxonomiaRouter.get("/taxonomia/", (req, res) => {
+caracteristicaRouter.get("/caracteristica/", (req, res) => {
   var queryFilter = {};
   if (req.query.filter) {
     queryFilter[Op.or] = {
@@ -23,14 +20,14 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
       : [[...req.query.order.split(".")]]
     : undefined;
 
-  Taxonomia.findAndCountAll({
+  Caracteristica.findAndCountAll({
     where: {
       [Op.and]: {
         ...queryFilter,
       },
     },
     include: {
-      model: Denominacao,
+      model: Atributo,
     },
     order: order,
     limit:
@@ -42,14 +39,14 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
       raw: result.rows,
       headers: [
         { title: "Nome", order: "nome" },
-        { title: "Denominacao", order: "Denominacao.denominacao" },
+        { title: "Descricao", order: "descricao" },
       ],
       count: result.count,
-      rows: result.rows.map((taxonomia) => ({
-        values: [taxonomia.nome, taxonomia.Denominacao.denominacao],
+      rows: result.rows.map((caracteristica) => ({
+        values: [caracteristica.nome, caracteristica.descricao],
         actions: [
           {
-            id: taxonomia.id,
+            id: caracteristica.id,
             name: "edit",
 
             //Exigido pelo Datatable
@@ -58,7 +55,7 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
             variant: "outline-info",
           },
           {
-            id: taxonomia.id,
+            id: caracteristica.id,
             name: "delete",
 
             //Exigido pelo Datatable
@@ -72,21 +69,11 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
   });
 });
 
-taxonomiaRouter.get("/taxonomia/:id", (req, res) => {
-  Taxonomia.findByPk(req.params.id, {
-     include: [
-       {model: Denominacao},
-       {model:Caracteristica, 
-      include:{
-        model: Atributo
-      }}
-        
-      ],   
-       
-  })
-    .then((taxonomia) => {
-      if (taxonomia) {
-        res.send(taxonomia);
+caracteristicaRouter.get("/caracteristica/:id", (req, res) => {
+  Caracteristica.findByPk(req.params.id, {})
+    .then((caracteristica) => {
+      if (caracteristica) {
+        res.send(caracteristica);
       } else res.sendStatus(404);
     })
     .catch((err) => {
@@ -95,13 +82,13 @@ taxonomiaRouter.get("/taxonomia/:id", (req, res) => {
     });
 });
 
-taxonomiaRouter.put("/taxonomia/:id", (req, res) => {
-  Taxonomia.findByPk(req.params.id)
-    .then(async (taxonomia) => {
-      if (taxonomia) {
+caracteristicaRouter.put("/caracteristica/:id", (req, res) => {
+  Caracteristica.findByPk(req.params.id)
+    .then(async (caracteristica) => {
+      if (caracteristica) {
         const denominacao = await Denominacao.findByPk(req.body.DenominacaoId);
-        taxonomia.update(req.body).then((taxonomia) => {
-          if (taxonomia) {
+        caracteristica.update(req.body).then((caracteristica) => {
+          if (caracteristica) {
             res.sendStatus(200);
           } else {
             res.sendStatus(500);
@@ -112,10 +99,10 @@ taxonomiaRouter.put("/taxonomia/:id", (req, res) => {
     .catch((err) => res.sendStatus(500));
 });
 
-taxonomiaRouter.delete("/taxonomia/:id", (req, res) => {
-  Taxonomia.findByPk(req.params.id)
-    .then((taxonomia) => {
-      taxonomia.destroy().then((result) => {
+caracteristicaRouter.delete("/caracteristica/:id", (req, res) => {
+  Caracteristica.findByPk(req.params.id)
+    .then((caracteristica) => {
+      caracteristica.destroy().then((result) => {
         if (result) {
           res.sendStatus(200);
         } else {
@@ -128,14 +115,14 @@ taxonomiaRouter.delete("/taxonomia/:id", (req, res) => {
     });
 });
 
-taxonomiaRouter.post("/taxonomia", (req, res) => {
-  Taxonomia.create(req.body)
-  .then(taxonomia => {
-    res.send(taxonomia);
+caracteristicaRouter.post("/caracteristica", (req, res) => {
+  Caracteristica.create(req.body)
+  .then(caracteristica => {
+    res.send(caracteristica);
   })
   .catch((err) => {
     console.log(err);
     res.sendStatus(500);
   })
 });
-export default taxonomiaRouter;
+export default caracteristicaRouter;

@@ -11,6 +11,9 @@ const Taxonomia = sequelize.define(
   },
   {
     paranoid: true,
+    name: {
+      plural: 'Taxonomias'
+    },
     tableName: "taxonomia",
     underscored: true,
     freezeTableName: true,

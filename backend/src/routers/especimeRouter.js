@@ -1,5 +1,7 @@
 import express, { query } from "express";
 import { Op } from "sequelize";
+import Atributo from "../models/museu/Atributo";
+import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
 import Especime from "../models/museu/Especime";
 import Taxonomia from "../models/museu/Taxonomia";
@@ -62,7 +64,10 @@ especimeRouter.get("/especime", (req, res) => {
         values: [
           especime.nome,
           especime.descricao,
-          especime.Taxonomia.map(taxonomia => taxonomia.Denominacao.denominacao + ": " + taxonomia.nome).join(", "),
+          especime.Taxonomias.map(
+            (taxonomia) =>
+              taxonomia.Denominacao.denominacao + ": " + taxonomia.nome
+          ).join(", "),
         ],
         actions: [
           {
@@ -100,6 +105,7 @@ especimeRouter.get("/especime", (req, res) => {
 
 especimeRouter.get("/especime/:id", (req, res) => {
   Especime.findByPk(req.params.id, {
+    attributes: ["id", "nome", "descricao"],
     include: [
       {
         model: Taxonomia,
@@ -109,10 +115,19 @@ especimeRouter.get("/especime/:id", (req, res) => {
           ["Denominacao", "DenominacaoId", "DESC"],
           ["Denominacao", "id", "ASC"],
         ],
-        include: {
+        include: [{
           model: Denominacao,
           attributes: ["denominacao"],
         },
+        {
+          model: Caracteristica,
+          attributes:["nome", "descricao"],
+          include: {
+            model: Atributo,
+            attributes:["nome"],
+          },
+          through: { attributes: [] },
+        }]
       },
     ],
   })
@@ -132,10 +147,8 @@ especimeRouter.put("/especime/:id", (req, res) => {
       if (especime) {
         especime.update(req.body).then((especime) => {
           if (especime) {
-            Promise.all([
-              especime.setDenominacao(req.body.Denominacao),
-              especime.setTaxonomia(req.body.Taxonomia),
-            ])
+            especime
+              .setTaxonomias(req.body.Taxonomias)
               .then(() => res.send(especime))
               .catch((err) => {
                 console.log(err);
@@ -148,6 +161,22 @@ especimeRouter.put("/especime/:id", (req, res) => {
     .catch((err) => res.sendStatus(500));
 });
 
-especimeRouter.post("/especime")
+especimeRouter.post("/especime", (req, res) => {
+  Especime.create(req.body)
+    .then((especime) => {
+      console.log(especime);
+      especime
+        .setTaxonomias(req.body.Taxonomias)
+        .then(() => res.send(especime))
+        .catch((err) => {
+          console.log(err);
+          res.sendStatus(500);
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.sendStatus(500, "error");
+    });
+});
 
 export default especimeRouter;

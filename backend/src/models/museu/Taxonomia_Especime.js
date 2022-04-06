@@ -3,6 +3,7 @@ import sequelize from "../../database/museu.js";
 
 const Taxonomia_Especime = sequelize.define(
   "Taxonomia_Especime",{
+    
   },{
     paranoid: true,
     tableName: "taxonomia_especime",
