@@ -95,48 +95,48 @@ atributoRouter.post("/atributo", (req, res) => {
       res.send(atributo);
     })
     .catch((err) => {
-      console.log(err)
+      console.log(err);
       res.sendStatus(500, "error");
     });
 });
 
 atributoRouter.put("/atributo/:id", (req, res) => {
-    Atributo.findByPk(req.params.id)
-      .then((atributo) => {
-        if (atributo) {
-          atributo.update(req.body).then((result) => {
-            if (result) res.sendStatus(200);
-            else {
-              res.sendStatus(500);
-            }
-          });
-        } else {
-          res.sendStatus(404);
-        }
-      })
-      .catch(() => {
-        res.sendStatus(500);
-      });
-  });
+  Atributo.findByPk(req.params.id)
+    .then((atributo) => {
+      if (atributo) {
+        atributo.update(req.body).then((result) => {
+          if (result) res.sendStatus(200);
+          else {
+            res.sendStatus(500);
+          }
+        });
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch(() => {
+      res.sendStatus(500);
+    });
+});
 
 atributoRouter.delete("/atributo/:id", (req, res) => {
-    Atributo.findByPk(req.params.id)
-      .then((atributo) => {
-        if (atributo) {
-            atributo.destroy().then((result) => {
-            if (result) res.sendStatus(200);
-            else {
-              res.sendStatus(500);
-            }
-          });
-        } else {
-          res.sendStatus(404);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.sendStatus(500);
-      });
-  });
+  Atributo.findByPk(req.params.id)
+    .then((atributo) => {
+      if (atributo) {
+        atributo.destroy().then((result) => {
+          if (result) res.sendStatus(200);
+          else {
+            res.sendStatus(500);
+          }
+        });
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+});
 
 export default atributoRouter;

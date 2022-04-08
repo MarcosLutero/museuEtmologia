@@ -100,42 +100,42 @@ denominacaoRouter.post("/denominacao", (req, res) => {
 });
 
 denominacaoRouter.put("/denominacao/:id", (req, res) => {
-    Denominacao.findByPk(req.params.id)
-      .then((denominacao) => {
-        if (denominacao) {
-          denominacao.update(req.body).then((result) => {
-            if (result) res.sendStatus(200);
-            else {
-              res.sendStatus(500);
-            }
-          });
-        } else {
-          res.sendStatus(404);
-        }
-      })
-      .catch(() => {
-        res.sendStatus(500);
-      });
-  });
+  Denominacao.findByPk(req.params.id)
+    .then((denominacao) => {
+      if (denominacao) {
+        denominacao.update(req.body).then((result) => {
+          if (result) res.sendStatus(200);
+          else {
+            res.sendStatus(500);
+          }
+        });
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch(() => {
+      res.sendStatus(500);
+    });
+});
 
 denominacaoRouter.delete("/denominacao/:id", (req, res) => {
-    Denominacao.findByPk(req.params.id)
-      .then((denominacao) => {
-        if (denominacao) {
-            denominacao.destroy().then((result) => {
-            if (result) res.sendStatus(200);
-            else {
-              res.sendStatus(500);
-            }
-          });
-        } else {
-          res.sendStatus(404);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.sendStatus(500);
-      });
-  });
+  Denominacao.findByPk(req.params.id)
+    .then((denominacao) => {
+      if (denominacao) {
+        denominacao.destroy().then((result) => {
+          if (result) res.sendStatus(200);
+          else {
+            res.sendStatus(500);
+          }
+        });
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+});
 
 export default denominacaoRouter;
