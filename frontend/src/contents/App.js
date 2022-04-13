@@ -1,28 +1,43 @@
 import React from "react";
-import { Container } from "react-bootstrap";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MenuTop from "./funcoes/MenuTop.js";
-import Modal from "./funcoes/Modal";
 import Login from "./Componentes/Login.js";
+import PaginaInicial from "./Componentes/PaginaInicial.js";
+import Principal from "./Componentes/Principal.js";
+import MenuTop from "./funcoes/MenuTop.js";
+
+import "./App.css";
 
 class App extends React.Component {
   state = {
-    usuario: {
-      id: null,
+
+    usuario: JSON.parse(localStorage.getItem("usuario")) ?? {
       login: null,
-      nome: "Marcos lutero",
+      nome: null,
+      token: null
     },
   };
   render() {
     return (
-      <Container fluid={true}>
-        <MenuTop
-          usuario={this.state.usuario}
-          logout={() => {
-            this.setState({ usuario: { id: null, login: null, nome: null }});
-          }}
-        />
-      </Container>
+      <section>
+        <div className="layout">
+          <BrowserRouter>
+            <MenuTop
+              usuario={this.state.usuario}
+              logout={() => {
+                this.setState({
+                  usuario: {login: null, nome: null,token: null},
+                });
+              }}
+            />
+
+            <Routes>
+              <Route path="/" element={<PaginaInicial />} />
+              <Route path="Login" element={<Login setUsuario={usuario=>{this.setState({usuario})}}/>} />
+              <Route path="Principal" element={<Principal />} />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </section>
     );
   }
 }

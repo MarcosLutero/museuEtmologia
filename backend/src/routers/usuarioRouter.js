@@ -1,7 +1,7 @@
 import express from "express";
 import sequelize from "../database/museu";
 import md5 from "md5";
-
+import JWT from "jsonwebtoken";
 import Usuario from "../models/museu/Usuario";
 import { Op } from "sequelize";
 
@@ -68,19 +68,39 @@ usuarioRouter.get("/usuario/", (req, res) => {
   });
 });
 
-usuarioRouter.get("/usuario/login", async (req, res) => {
-  try {
-    const login = await Usuario.findOne({
-      where: { login: req.body.login, senha: md5(req.body.senha) },
+usuarioRouter.post("/usuario/login", (req, res) => {
+  Usuario.findOne({
+    where: { 
+      login: req.body.login, 
+      senha: md5(req.body.senha)
+    },
+  })
+    .then(async (usuario) => {
+      if (usuario) {
+        const token = JWT.sign(
+          {
+            login: usuario.login,
+            senha: usuario.senha,
+          },
+          "12345",
+          {
+            algorithm: "HS256",
+            expiresIn: 600,
+          }
+        );
+        res.send({
+          login: usuario.login,
+          nome: usuario.nome,
+          token: token
+        });
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err.toString());
     });
-    if (login) {
-      res.sendStatus(200);
-    }
-  } catch (err) {
-    console.log(err);
-
-    res.sendStatus(500).end();
-  }
 });
 
 usuarioRouter.post("/usuario", async (req, res) => {
