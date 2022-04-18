@@ -7,7 +7,7 @@ import { Card, Col, Form, FormControl, InputGroup, Row } from "react-bootstrap";
 class PaginaInicial extends React.Component {
   render() {
     return ( 
-          <Row className="my-5">
+          
             <Col lg={{ span: 4, offset: 4 }}>
             <Card>
               <Card.Header>
@@ -42,7 +42,7 @@ class PaginaInicial extends React.Component {
               </Card.Footer>
             </Card>
             </Col>
-          </Row>
+
      
       
     );

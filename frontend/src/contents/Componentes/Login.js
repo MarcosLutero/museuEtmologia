@@ -25,6 +25,7 @@ class Login extends React.Component {
     token: null,
   };
 
+
   login_user(event) {
     this.setState(() => ({ login: event.target.value }));
   }
@@ -32,18 +33,15 @@ class Login extends React.Component {
     this.setState(() => ({ senha: event.target.value }));
   }
 
+  
   login = (event) => {
     event.preventDefault();
     axios
-      .post(
-        "http://localhost:8080/usuario/login",
-        {
-          login: this.state.login,
-          senha: this.state.senha,
-        }
-      )
+      .post("http://localhost:8080/usuario/login", {
+        login: this.state.login,
+        senha: this.state.senha,
+      })
       .then((res) => {
-        console.log(res)
         this.props.setUsuario(res.data);
         localStorage.setItem("usuario", JSON.stringify(res.data));
 
@@ -71,7 +69,7 @@ class Login extends React.Component {
   };
   render() {
     return (
-      <Row className="my-5">
+
         <Col lg={{ span: 4, offset: 4 }}>
           <Card>
             <Card.Header>
@@ -141,7 +139,7 @@ class Login extends React.Component {
             </Card.Footer>
           </Card>
         </Col>
-      </Row>
+
     );
   }
 }
