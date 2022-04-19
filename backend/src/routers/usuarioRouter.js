@@ -85,7 +85,7 @@ usuarioRouter.post("/usuario/login", (req, res) => {
           "12345",
           {
             algorithm: "HS256",
-            expiresIn: 600,
+            expiresIn: 3600,
           }
         );
         res.send({

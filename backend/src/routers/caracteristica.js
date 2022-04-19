@@ -6,64 +6,18 @@ import Atributo from "../models/museu/Atributo";
 const caracteristicaRouter = express.Router();
 
 caracteristicaRouter.get("/caracteristica/", (req, res) => {
-  var queryFilter = {};
-  if (req.query.filter) {
-    queryFilter[Op.or] = {
-      nome: {
-        [Op.like]: "%" + req.query.filter + "%",
-      },
-    };
-  }
-  const order = req.query.order
-    ? req.query.dir
-      ? [[...req.query.order.split("."), req.query.dir]]
-      : [[...req.query.order.split(".")]]
-    : undefined;
-
-  Caracteristica.findAndCountAll({
-    where: {
-      [Op.and]: {
-        ...queryFilter,
-      },
-    },
+  Caracteristica.findAll({
     include: {
       model: Atributo,
-    },
-    order: order,
-    limit:
-      parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : undefined,
-    offset:
-      parseInt(req.query.offset) > 0 ? parseInt(req.query.offset) : undefined,
-  }).then((result) => {
+      attributes: ['nome']
+    }
+  }).then((caracteristicas) => {
     res.send({
-      raw: result.rows,
-      headers: [
-        { title: "Nome", order: "nome" },
-        { title: "Descricao", order: "descricao" },
-      ],
-      count: result.count,
-      rows: result.rows.map((caracteristica) => ({
-        values: [caracteristica.nome, caracteristica.descricao],
-        actions: [
-          {
-            id: caracteristica.id,
-            name: "edit",
-
-            //Exigido pelo Datatable
-            icon: "faPencilAlt",
-            title: "Editar",
-            variant: "outline-info",
-          },
-          {
-            id: caracteristica.id,
-            name: "delete",
-
-            //Exigido pelo Datatable
-            icon: "faTrash",
-            title: "Excluir",
-            variant: "outline-danger",
-          },
-        ],
+      headers: ["Nome", "Descrição","Atributo"],
+      rows: caracteristicas.map((caracteristica) => ({
+        id: caracteristica.id,
+        columns: [caracteristica.nome, caracteristica.descricao, caracteristica.Atributo.nome],
+        actions: ["Editar","Excluir"],
       })),
     });
   });

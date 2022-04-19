@@ -1,5 +1,5 @@
 import React from "react";
-class CdrIdentificacao extends React.Component {
+class TaxonomiaList extends React.Component {
   render() {
     return(
       <>
@@ -9,4 +9,4 @@ class CdrIdentificacao extends React.Component {
   }
 }
 
-export default CdrIdentificacao;
+export default TaxonomiaList;

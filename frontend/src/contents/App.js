@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./Componentes/Login.js";
 import PaginaInicial from "./Componentes/PaginaInicial.js";
-import Principal from "./Componentes/CdrIdentificacao.js";
+import IdentificacaoList from "./Componentes/IdentificacaoList";
 import MenuTop from "./funcoes/MenuTop.js";
 
 import "./App.css";
@@ -61,13 +61,14 @@ class App extends React.Component {
                           setUsuario={(usuario) => {
                             this.setState({ usuario });
                           }}
+                          usuario={this.state.token}
                         />
                       </Col>
                     </Row>
                   ) : (
                     <Login
                       setUsuario={(usuario) => {
-                        this.setState({ usuario, Pagina: Principal });
+                        this.setState({ usuario, Pagina: IdentificacaoList });
                       }}
                     />
                   )
