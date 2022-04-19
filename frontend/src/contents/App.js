@@ -61,7 +61,7 @@ class App extends React.Component {
                           setUsuario={(usuario) => {
                             this.setState({ usuario });
                           }}
-                          usuario={this.state.token}
+                          usuario={this.state.usuario}
                         />
                       </Col>
                     </Row>

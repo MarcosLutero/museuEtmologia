@@ -8,23 +8,40 @@ class IdentificacaoList extends React.Component {
   onAction(action, id, callback) {
     switch (action) {
       case "Excluir":
-        if (window.confirm("Deseja realente excluir este registro?")) {
+        if (window.confirm("Deseja realmente excluir este registro?")) {
           const config = {
-            headers: { Authorization: "Bearer " + this.props.token },
+            headers: { Authorization: "Bearer " + this.props.usuario.token },
           };
           axios
-            .delete("http://localhost:8080/caracteristica/" + id,config)
+            .delete(`http://localhost:8080/caracteristica/${id}`, config)
             .then((res) => {
               callback();
             })
-            .catch(err=>{
-              console.log("erro ao excluir" + err)
-            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
+        break;
+
+      case "Editar":
+        const config = {
+          headers: { Authorization: "Bearer " + this.props.usuario.token },
+        };
+        axios
+          .get(`http://localhost:8080/caracteristica/${id}`, config)
+          .then((res) => {
+            console.log("chamar modal")
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
         break;
       default:
         break;
     }
+    console.log(action, id);
+    callback();
   }
 
   render() {
