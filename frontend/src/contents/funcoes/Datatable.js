@@ -1,6 +1,21 @@
 import axios from "axios";
 import React from "react";
-import { Button, FormControl, Table } from "react-bootstrap";
+import {
+  faBackward,
+  faFastBackward,
+  faFastForward,
+  faForward,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  Form,
+  Button,
+  FormControl,
+  Table,
+  InputGroup,
+  Pagination,
+} from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import * as Icons from "@fortawesome/free-solid-svg-icons";
 
 class Datatable extends React.Component {
   state = {
@@ -23,19 +38,52 @@ class Datatable extends React.Component {
       this.setState(() => ({ data: response.data }));
     });
   }
-
+ 
+  onClickAdd() {
+    if (this.props.onClickAdd) {
+      this.props.onClickAdd(() => this.update());
+    }
+  }
   render() {
+    
+
     return (
       <Table responsive condensed striped className="bg-light">
         <thead>
           <tr>
-            <td colSpan={this.state.data.headers.length + 1}>
-              <FormControl
-                value={this.state.filter}
-                onChange={(event) =>
-                  this.setState(() => ({ filter: event.target.value }))
-                }
-              />
+            <td>Ola</td>
+          </tr>
+          <tr className="d-print-none">
+            <td colSpan={this.state.data.headers.length}>
+              <Form as="div" className="d-flex align-items-stretch flex-wrap">
+                <div className="mr-2 my-2 flex-fill">
+                  <Button
+                    size="sm"
+                    style={{ width: "100%" }}
+                    variant="outline-success"
+                    onClick={() => this.onClickAdd()}
+                  >
+                    <FontAwesomeIcon icon={Icons.faPlus} />
+                    &nbsp;Adicionar
+                  </Button>
+                </div>
+                <div className="mr-2 my-2 flex-fill">
+                  <InputGroup size="sm" style={{ width: "100%" }}>
+                    <InputGroup.Text variant="primary">
+                      <FontAwesomeIcon icon={Icons.faSearch} />
+                    </InputGroup.Text>
+                    <FormControl
+                      type="text"
+                      placeholder="Pesquisar"
+                      value={this.state.filter}
+                      onChange={(event) =>
+                        this.setState(() => ({ filter: event.target.value }))
+                      }
+                    />
+                  </InputGroup>
+                </div>
+                
+              </Form>
             </td>
           </tr>
           <tr>
@@ -59,6 +107,7 @@ class Datatable extends React.Component {
                 <td>
                   {row.actions.map((action, key) => (
                     <Button
+                      className="ml-1"
                       size="sm"
                       key={key}
                       variant="outline-primary"

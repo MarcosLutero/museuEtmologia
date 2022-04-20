@@ -8,7 +8,7 @@ class PaginaInicial extends React.Component {
   render() {
     return ( 
           
-            <Col lg={{ span: 4, offset: 4 }}>
+            <Col lg={{ span: 6, offset: 3 }}>
             <Card>
               <Card.Header>
                 <Card.Title as="span">Pesquise</Card.Title>

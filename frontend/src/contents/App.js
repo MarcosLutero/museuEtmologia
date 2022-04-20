@@ -4,7 +4,6 @@ import Login from "./Componentes/Login.js";
 import PaginaInicial from "./Componentes/PaginaInicial.js";
 import IdentificacaoList from "./Componentes/IdentificacaoList";
 import MenuTop from "./funcoes/MenuTop.js";
-
 import "./App.css";
 import { Col, Row } from "react-bootstrap";
 import MenuLateral from "./funcoes/MenuLateral.js";
@@ -22,7 +21,7 @@ class App extends React.Component {
     const Pagina = this.state.Pagina;
     return (
       <section>
-        <div className="img"></div>
+        <div className="img"/>
         <div className="layout">
           <BrowserRouter>
             <MenuTop
@@ -77,6 +76,7 @@ class App extends React.Component {
             </Routes>
           </BrowserRouter>
         </div>
+
       </section>
     );
   }

@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Datatable from "../funcoes/Datatable";
 import React from "react";
 import axios from "axios";
+import IdentificacaoForm from "./IdentificacaoForm";
+import Modal from "../funcoes/Modal";
 
 class IdentificacaoList extends React.Component {
   onAction(action, id, callback) {
@@ -30,7 +32,7 @@ class IdentificacaoList extends React.Component {
         axios
           .get(`http://localhost:8080/caracteristica/${id}`, config)
           .then((res) => {
-            console.log("chamar modal")
+            console.log("chamar modal");
           })
           .catch((err) => {
             console.log(err);
@@ -40,22 +42,31 @@ class IdentificacaoList extends React.Component {
       default:
         break;
     }
-    console.log(action, id);
-    callback();
   }
+  state = {
+    titulo: "",
+    body: "",
+  };
 
   render() {
     return (
       <>
-        <h3>
-          <FontAwesomeIcon icon={faIndent} /> Lista de Identificações
-        </h3>
         <hr />
         <Datatable
           url={"http://localhost:8080/caracteristica"}
           token={this.props.usuario.token}
           onAction={(action, id, callback) =>
             this.onAction(action, id, callback)
+          }
+          onClickAdd={
+            <Modal
+              setTitulo={() => {
+                this.setState("adicionar");
+              }}
+              setBody={() => {
+                this.setState(IdentificacaoForm);
+              }}
+            />
           }
         />
       </>

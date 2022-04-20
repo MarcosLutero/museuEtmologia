@@ -10,6 +10,7 @@
 }
 
 section{
+  position: fixed;
   background-image: url("../img/fundo.jpg");
   height: 100vh;
   width: 100vw;
