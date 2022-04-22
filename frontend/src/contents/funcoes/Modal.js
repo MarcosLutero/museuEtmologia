@@ -6,7 +6,7 @@ class Modal extends React.Component {
       <BSModal
         size={this.props.size ?? "md"}
         show={this.props.show}
-        onHide={() => (this.props.closeModal ? this.props.closeModal() : null)}
+        onHide={()=>this.props.onHide()}
       >
         <BSModal.Header closeButton>
           <BSModal.Title>{this.props.title}</BSModal.Title>
