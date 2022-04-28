@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./Componentes/Login.js";
 import PaginaInicial from "./Componentes/PaginaInicial.js";
-import IdentificacaoList from "./Componentes/IdentificacaoList";
+import EspecimeList from "./Componentes/EspecimeList";
 import MenuTop from "./funcoes/MenuTop.js";
 import "./App.css";
 import { Col, Row } from "react-bootstrap";
@@ -67,7 +67,7 @@ class App extends React.Component {
                   ) : (
                     <Login
                       setUsuario={(usuario) => {
-                        this.setState({ usuario, Pagina: IdentificacaoList });
+                        this.setState({ usuario, Pagina: EspecimeList });
                       }}
                     />
                   )

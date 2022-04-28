@@ -1,16 +1,18 @@
 import React from "react";
 import { Card, ListGroup } from "react-bootstrap";
-import IdentificacaoList from "../Componentes/IdentificacaoList.js";
 import EspecimeList from "../Componentes/EspecimeList.js";
 import TaxonomiaList from "../Componentes/TaxonomiaList.js";
-import PaginaInicial from "../Componentes/PaginaInicial";
+import AtributoCaracteristicaList from "../Componentes/AtributoCaracteristicaList.js";
+import DenominacaoList from "../Componentes/DenominacaoList.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClipboardList,
   faDog,
-  faHome,
   faIndent,
+  faPaw,
 } from "@fortawesome/free-solid-svg-icons";
+
+
 
 class MenuLateral extends React.Component {
   render() {
@@ -21,20 +23,14 @@ class MenuLateral extends React.Component {
         </Card.Header>
         <Card.Body>
           <ListGroup>
-            <ListGroup.Item
+          <ListGroup.Item
               role="button"
-              onClick={() => this.props.setPagina(PaginaInicial)}
+              onClick={() => this.props.setPagina(EspecimeList)}
             >
-              <FontAwesomeIcon icon={faHome} />
-               &nbsp; Home
+              <FontAwesomeIcon icon={faDog} />
+              &nbsp;Cadastar Especime
             </ListGroup.Item>
-            <ListGroup.Item
-              role="button"
-              onClick={() => this.props.setPagina(IdentificacaoList)}
-            >
-              <FontAwesomeIcon icon={faIndent} />
-              &nbsp;Cadastar Identificação
-            </ListGroup.Item>
+
             <ListGroup.Item
               role="button"
               onClick={() => this.props.setPagina(TaxonomiaList)}
@@ -42,12 +38,21 @@ class MenuLateral extends React.Component {
               <FontAwesomeIcon icon={faClipboardList} />
               &nbsp;Cadastar Taxonomia
             </ListGroup.Item>
+
             <ListGroup.Item
               role="button"
-              onClick={() => this.props.setPagina(EspecimeList)}
+              onClick={() => this.props.setPagina(AtributoCaracteristicaList)}
             >
-              <FontAwesomeIcon icon={faDog} />
-              &nbsp;Cadastar Especime
+              <FontAwesomeIcon icon={faIndent} />
+              &nbsp;Cadastar Atributos/Caracteristica
+            </ListGroup.Item>
+            
+            <ListGroup.Item
+              role="button"
+              onClick={() => this.props.setPagina(DenominacaoList)}
+            >
+              <FontAwesomeIcon icon={faPaw} />
+               &nbsp; Cadastrar Denominação
             </ListGroup.Item>
           </ListGroup>
         </Card.Body>

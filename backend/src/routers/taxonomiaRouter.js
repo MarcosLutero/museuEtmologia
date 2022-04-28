@@ -5,68 +5,20 @@ import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
 import Taxonomia from "../models/museu/Taxonomia";
 
-
 const taxonomiaRouter = express.Router();
 
 taxonomiaRouter.get("/taxonomia/", (req, res) => {
-  var queryFilter = {};
-  if (req.query.filter) {
-    queryFilter[Op.or] = {
-      nome: {
-        [Op.like]: "%" + req.query.filter + "%",
-      },
-    };
-  }
-  const order = req.query.order
-    ? req.query.dir
-      ? [[...req.query.order.split("."), req.query.dir]]
-      : [[...req.query.order.split(".")]]
-    : undefined;
-
-  Taxonomia.findAndCountAll({
-    where: {
-      [Op.and]: {
-        ...queryFilter,
-      },
-    },
+  Taxonomia.findAll({
     include: {
       model: Denominacao,
     },
-    order: order,
-    limit:
-      parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : undefined,
-    offset:
-      parseInt(req.query.offset) > 0 ? parseInt(req.query.offset) : undefined,
-  }).then((result) => {
+  }).then((taxonomia) => {
     res.send({
-      raw: result.rows,
-      headers: [
-        { title: "Nome", order: "nome" },
-        { title: "Denominacao", order: "Denominacao.denominacao" },
-      ],
-      count: result.count,
-      rows: result.rows.map((taxonomia) => ({
-        values: [taxonomia.nome, taxonomia.Denominacao.denominacao],
-        actions: [
-          {
-            id: taxonomia.id,
-            name: "edit",
-
-            //Exigido pelo Datatable
-            icon: "faPencilAlt",
-            title: "Editar",
-            variant: "outline-info",
-          },
-          {
-            id: taxonomia.id,
-            name: "delete",
-
-            //Exigido pelo Datatable
-            icon: "faTrash",
-            title: "Excluir",
-            variant: "outline-danger",
-          },
-        ],
+      headers: ["Nome", "Denominacao"],
+      rows: taxonomia.map((taxonomia) => ({
+        id: taxonomia.id,
+        columns: [taxonomia.nome, taxonomia.Denominacao.denominacao, ],
+        actions: ["Editar", "Excluir"],
       })),
     });
   });
@@ -74,15 +26,15 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
 
 taxonomiaRouter.get("/taxonomia/:id", (req, res) => {
   Taxonomia.findByPk(req.params.id, {
-     include: [
-       {model: Denominacao},
-       {model:Caracteristica, 
-      include:{
-        model: Atributo
-      }}
-        
-      ],   
-       
+    include: [
+      { model: Denominacao },
+      {
+        model: Caracteristica,
+        include: {
+          model: Atributo,
+        },
+      },
+    ],
   })
     .then((taxonomia) => {
       if (taxonomia) {
@@ -130,12 +82,12 @@ taxonomiaRouter.delete("/taxonomia/:id", (req, res) => {
 
 taxonomiaRouter.post("/taxonomia", (req, res) => {
   Taxonomia.create(req.body)
-  .then(taxonomia => {
-    res.send(taxonomia);
-  })
-  .catch((err) => {
-    console.log(err);
-    res.sendStatus(500);
-  })
+    .then((taxonomia) => {
+      res.send(taxonomia);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
 });
 export default taxonomiaRouter;

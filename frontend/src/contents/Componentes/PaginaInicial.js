@@ -9,7 +9,7 @@ class PaginaInicial extends React.Component {
     return ( 
           
             <Col lg={{ span: 6, offset: 3 }}>
-            <Card>
+            <Card className="mt-4">
               <Card.Header>
                 <Card.Title as="span">Pesquise</Card.Title>
               </Card.Header>

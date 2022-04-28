@@ -11,14 +11,17 @@ import Caracteristica_Taxonomia from "../models/museu/Caracteristica_Taxonomia";
 const initdb = () =>
   new Promise((resolve, reject) => {
     Denominacao.hasMany(Denominacao, {
+      as: "Filhos",
       onDelete: "CASCADE",
       foreignKey: {
         allowNull: true,
       },
     });
     Denominacao.belongsTo(Denominacao, {
+      as: "Pai",
       onDelete: "CASCADE",
       foreignKey: {
+        name: "denominacao_id",
         allowNull: true,
       },
     });

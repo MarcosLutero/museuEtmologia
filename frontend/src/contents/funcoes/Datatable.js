@@ -70,9 +70,6 @@ class Datatable extends React.Component {
       <>
         <Table responsive striped className="bg-light">
           <thead>
-            <tr>
-              <td>Titulo</td>
-            </tr>
             <tr className="d-print-none">
               <td colSpan={this.state.data.headers.length}>
                 <Form as="div" className="d-flex align-items-stretch flex-wrap">
@@ -148,6 +145,13 @@ class Datatable extends React.Component {
             <this.props.FormComponent
               update={() => this.update()}
               values={this.state.values}
+              usuario={this.props.usuario}
+              close={() =>
+                this.setState(
+                  () => ({ show: false }),
+                  () => this.update()
+                )
+              }
             />
           }
         />

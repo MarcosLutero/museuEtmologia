@@ -1,85 +1,37 @@
-import express, { query } from "express";
-import { Op } from "sequelize";
+import express from "express";
 import Atributo from "../models/museu/Atributo";
+import Caracteristicas from "../models/museu/Caracteristica";
 
 const atributoRouter = express.Router();
-atributoRouter.get("/atributo", (req, res) => {
-  const queryFilter = {};
-
-  if (req.query.filter) {
-    queryFilter[Op.or] = {
-      atributo: {
-        [Op.like]: "%" + req.query.filter + "%",
-      },
-    };
-  }
-  const order = req.query.order
-    ? req.query.dir
-      ? [[...req.query.order.split("."), req.query.dir]]
-      : [[...req.query.order.split(".")]]
-    : undefined;
-
-  Atributo.findAndCountAll({
-    where: {
-      [Op.and]: {
-        ...queryFilter,
-      },
-    },
-    order: order,
-    limit:
-      parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : undefined,
-    offset:
-      parseInt(req.query.offset) > 0 ? parseInt(req.query.offset) : undefined,
-  }).then((result) => {
+atributoRouter.get("/atributoCaracteristica/", (req, res) => {
+  Atributo.findAll({
+    include: [{ model: Caracteristicas }],
+  }).then((atributo) => {
     res.send({
-      raw: result.rows,
-      headers: [{ title: "Atributo", order: "atributo" }],
-      count: result.count,
-      rows: result.rows.map((atributo) => ({
-        values: [atributo.atributo],
-        actions: [
-          {
-            id: atributo.id,
-            name: "edit",
-
-            //Exigido pelo Datatable
-            icon: "faPencilAlt",
-            title: "Editar",
-            variant: "outline-primary",
-          },
-          {
-            id: atributo.id,
-            name: "delete",
-
-            //Exigido pelo Datatable
-            icon: "faTrash",
-            title: "Excluir",
-            variant: "outline-danger",
-          },
+      headers: ["Nome", "Identificação", "Nome da Caracteristica", ],
+      rows: atributo.map((atributo) => ({
+        id: atributo.id,
+        columns: [
+          atributo.nome,
+          atributo.identificacao,
+          atributo.Caracteristicas.map(
+            (caracteristicas) => caracteristicas.nome
+          ).join("; "),
         ],
+        actions: ["Editar", "Excluir"],
       })),
     });
   });
-  console.log(res.body);
 });
 
-atributoRouter.get("/atributo/options", (req, res) => {
-  Atributo.findAll({
-    attributes: [
-      ["id", "value"],
-      ["atributo", "label"],
-    ],
+
+atributoRouter.get("/atributoCaracteristica/:id", (req, res) => {
+  Atributo.findByPk(req.params.id,{
+    include:[{
+      model: Caracteristicas,
+      atributes:["nome", "descricao"]
+    }]
   })
-    .then((options) => {
-      res.send(options);
-    })
-    .catch((err) => {
-      res.status(500).send(err.toString());
-    });
-});
-
-atributoRouter.get("/atributo/:id", (req, res) => {
-  Atributo.findByPk(req.params.id)
     .then((atributo) => {
       if (atributo) res.send(atributo);
       else res.sendStatus(404);
@@ -89,39 +41,65 @@ atributoRouter.get("/atributo/:id", (req, res) => {
     });
 });
 
-atributoRouter.post("/atributo", (req, res) => {
-  Atributo.create(req.body)
-    .then((atributo) => {
-      res.send(atributo);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500, "error");
-    });
-});
 
-atributoRouter.put("/atributo/:id", (req, res) => {
-  Atributo.findByPk(req.params.id)
-    .then((atributo) => {
-      if (atributo) {
-        atributo.update(req.body).then((result) => {
-          if (result) res.sendStatus(200);
-          else {
-            res.sendStatus(500);
-          }
-        });
-      } else {
-        res.sendStatus(404);
-      }
+atributoRouter.post("/atributoCaracteristica", (req, res) => {
+  Atributo.create(req.body).then( async atributo => {
+      Promise.all(res.body.Caracteristicas.map(caracteristica=>Caracteristicas.create({
+        Nome: caracteristica.nome, Descricao: caracteristica.descricao})
+        ))
+        .then(()=>res.send(atributo))
+        .catch(err => {
+          console.log(err);
+          res.sendStatus(500);
+      });
     })
-    .catch(() => {
+    .catch(err=>{
+      console.log(err);
       res.sendStatus(500);
     });
+  }
+);
+
+
+atributoRouter.put("/atributoCaracteristica/:id", (req, res) => {
+  Atributo.findByPk(req.params.id, {include: Caracteristicas})
+    .then( async atributo => {
+      if (atributo) {
+        const transaction = await sequelize.transaction();
+        try {
+
+          await Promise.all([
+            ...atributo.Caracteristicas.map(caracteristica=>{
+              if(!req.body.Caracteristicas.find(c=> c.id===caracteristica.id)){
+                return caracteristica.destroy({transaction})
+              }
+            }),
+            ...req.body.Caracteristicas.map(caracteristica=>{
+              if(!caracteristica.id){
+                return Caracteristicas.create({Nome: caracteristica.nome, Descricao: caracteristica.descricao})
+              }
+            })]);
+
+        await atributo.update(req.body, {transaction});
+        await transaction.commit();
+        res.send(atributo)
+        }
+        catch(err){
+          console.log(err);
+          if(transaction) transaction.rollbavk();
+          res.sendStatus(500);
+        }}else{
+         res.sendStatus(404); 
+        }
+    }).catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+      });
 });
 
-atributoRouter.delete("/atributo/:id", (req, res) => {
+atributoRouter.delete("/atributoCaracteristica/:id", (req, res) => {
   Atributo.findByPk(req.params.id)
-    .then((atributo) => {
+    .then(atributo => {
       if (atributo) {
         atributo.destroy().then((result) => {
           if (result) res.sendStatus(200);

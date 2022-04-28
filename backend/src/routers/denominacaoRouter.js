@@ -1,62 +1,21 @@
 import express, { query } from "express";
-import { Op } from "sequelize";
 import Denominacao from "../models/museu/Denominacao";
 
 const denominacaoRouter = express.Router();
 denominacaoRouter.get("/denominacao", (req, res) => {
-  const queryFilter = {};
-
-  if (req.query.filter) {
-    queryFilter[Op.or] = {
-      denominacao: {
-        [Op.like]: "%" + req.query.filter + "%",
-      },
-    };
-  }
-  const order = req.query.order
-    ? req.query.dir
-      ? [[...req.query.order.split("."), req.query.dir]]
-      : [[...req.query.order.split(".")]]
-    : undefined;
-
-  Denominacao.findAndCountAll({
-    where: {
-      [Op.and]: {
-        ...queryFilter,
-      },
-    },
-    order: order,
-    limit:
-      parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : undefined,
-    offset:
-      parseInt(req.query.offset) > 0 ? parseInt(req.query.offset) : undefined,
-  }).then((result) => {
+  Denominacao.findAll({
+    include:[{model: Denominacao, as: "Pai"},{model: Denominacao, as: "Filhos"}]
+  }).then((denominacao) => {
     res.send({
-      raw: result.rows,
-      headers: [{ title: "Denominação", order: "denominação" }],
-      count: result.count,
-      rows: result.rows.map((denominacao) => ({
-        values: [denominacao.denominacao],
-        actions: [
-          {
-            id: denominacao.id,
-            name: "edit",
-
-            //Exigido pelo Datatable
-            icon: "faPencilAlt",
-            title: "Editar",
-            variant: "outline-primary",
-          },
-          {
-            id: denominacao.id,
-            name: "delete",
-
-            //Exigido pelo Datatable
-            icon: "faTrash",
-            title: "Excluir",
-            variant: "outline-danger",
-          },
+      headers: [ "Denominação", "Denominação Pai", "Denominação Filhos"],
+      rows: denominacao.map((denominacao) => ({
+        id: denominacao.id,
+        columns: [
+          denominacao.denominacao,
+          denominacao.Pai?.denominacao,
+          denominacao.Filhos.map(filho=>filho.denominacao).join(", ")
         ],
+        actions: ["Editar", "Excluir"],
       })),
     });
   });
