@@ -13,6 +13,10 @@ import {
 } from "react-bootstrap";
 import Select from "react-select";
 class AtributoCaracteristicaForm extends React.Component {
+  static defaultProps = {
+    values: {},
+  };
+
   save(values, callback) {
     const method = this.props.values.id ? "put" : "post";
     const url =
@@ -42,9 +46,8 @@ class AtributoCaracteristicaForm extends React.Component {
     return (
       <Formik
         initialValues={{
-          nome: this.props.values?.nome,
-          identificacao: this.props.values?.identificacao,
-          Caracteristicas: this.props.values.Caracteristicas??[],
+          ...this.props.values,
+          Caracteristicas: this.props.values.Caracteristicas ?? [],
         }}
         validate={(values) => {
           const errors = {};
@@ -99,37 +102,66 @@ class AtributoCaracteristicaForm extends React.Component {
                   </Tab>
                   <Tab eventKey="detalhes" title="Detalhes">
                     <legend>Caracteristicas Cadastradas</legend>
-                    <Table>
-                      <thead>
-                        <th>Nome</th>
-                        <th>Descrição</th>
-                        <th>Ações</th>
-                      </thead>
+                    <Table striped>
                       <tbody>
-                        {this.props.values.Caracteristicas.map(
-                          (caracteristica, key) => (
-                            <tr key={key}>
-                              <td>{caracteristica.nome}</td>
-                              <td>{caracteristica.descricao}</td>
-                              <td>
-                                <Button
-                                  className="form-control"
-                                  variant="danger"
-                                  size="sm"
-                                  onClick={() =>
-                                    setFieldValue(
-                                      "Caracteristicas",
-                                      values.Caracteristicas.filter((c) => c !== caracteristica)
+                        {values.Caracteristicas.map((caracteristica, key) => (
+                          <tr key={key}>
+                            <td>
+                              <Field
+                                className="form-control"
+                                name={`Caracteristicas[${key}].id`}
+                                type="hidden"
+                              />
+                              Nome:
+                              <Field
+                                className="form-control"
+                                name={`Caracteristicas[${key}].nome`}
+                              />
+                              Descrição:
+                              <Field
+                                className="form-control"
+                                name={`Caracteristicas[${key}].descricao`}
+                                as="textarea"
+                              />
+                            </td>
+                            <td>
+                              <Button
+                                className="form-control"
+                                variant="danger"
+                                size="sm"
+                                onClick={() =>
+                                  setFieldValue(
+                                    "Caracteristicas",
+                                    values.Caracteristicas.filter(
+                                      (c) => c !== caracteristica
                                     )
-                                  }
-                                >
-                                  <FontAwesomeIcon icon={faTrash} />
-                                </Button>
-                              </td>
-                            </tr>
-                          )
-                        )}
+                                  )
+                                }
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colSpan={2}>
+                            <Button
+                              className="form-control"
+                              variant="success"
+                              onClick={() =>
+                                setFieldValue("Caracteristicas", [
+                                  ...values.Caracteristicas,
+                                  { id: null, nome: "", descricao: "" },
+                                ])
+                              }
+                            >
+                              Adicionar
+                            </Button>
+                          </td>
+                        </tr>
+                      </tfoot>
                     </Table>
                   </Tab>
                 </Tabs>

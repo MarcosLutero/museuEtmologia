@@ -1,14 +1,15 @@
 import express from "express";
 import Atributo from "../models/museu/Atributo";
-import Caracteristicas from "../models/museu/Caracteristica";
+import Caracteristica from "../models/museu/Caracteristica";
+import sequelize from '../database/museu';
 
 const atributoRouter = express.Router();
 atributoRouter.get("/atributoCaracteristica/", (req, res) => {
   Atributo.findAll({
-    include: [{ model: Caracteristicas }],
+    include: [{ model: Caracteristica }],
   }).then((atributo) => {
     res.send({
-      headers: ["Nome", "Identificação", "Nome da Caracteristica", ],
+      headers: ["Nome", "Identificação", "Nome da Caracteristica"],
       rows: atributo.map((atributo) => ({
         id: atributo.id,
         columns: [
@@ -24,13 +25,14 @@ atributoRouter.get("/atributoCaracteristica/", (req, res) => {
   });
 });
 
-
 atributoRouter.get("/atributoCaracteristica/:id", (req, res) => {
-  Atributo.findByPk(req.params.id,{
-    include:[{
-      model: Caracteristicas,
-      atributes:["nome", "descricao"]
-    }]
+  Atributo.findByPk(req.params.id, {
+    include: [
+      {
+        model: Caracteristica,
+        atributes: ["nome", "descricao"],
+      },
+    ],
   })
     .then((atributo) => {
       if (atributo) res.send(atributo);
@@ -41,65 +43,78 @@ atributoRouter.get("/atributoCaracteristica/:id", (req, res) => {
     });
 });
 
-
 atributoRouter.post("/atributoCaracteristica", (req, res) => {
-  Atributo.create(req.body).then( async atributo => {
-      Promise.all(res.body.Caracteristicas.map(caracteristica=>Caracteristicas.create({
-        Nome: caracteristica.nome, Descricao: caracteristica.descricao})
-        ))
-        .then(()=>res.send(atributo))
-        .catch(err => {
+  Atributo.create(req.body)
+    .then((atributo) => {
+      Promise.all(
+        req.body.Caracteristicas.map((caracteristica) =>
+          Caracteristica.create({
+            ...caracteristica,
+            AtributoId: atributo.id,
+          })
+        )
+      )
+        .then(() => {
+          res.send(atributo);
+        })
+        .catch((err) => {
           console.log(err);
           res.sendStatus(500);
-      });
+        });
     })
-    .catch(err=>{
+    .catch((err) => {
       console.log(err);
       res.sendStatus(500);
     });
-  }
-);
-
+});
 
 atributoRouter.put("/atributoCaracteristica/:id", (req, res) => {
-  Atributo.findByPk(req.params.id, {include: Caracteristicas})
-    .then( async atributo => {
+  Atributo.findByPk(req.params.id, { include: Caracteristica })
+    .then(async (atributo) => {
       if (atributo) {
         const transaction = await sequelize.transaction();
         try {
-
           await Promise.all([
-            ...atributo.Caracteristicas.map(caracteristica=>{
-              if(!req.body.Caracteristicas.find(c=> c.id===caracteristica.id)){
-                return caracteristica.destroy({transaction})
+            ...atributo.Caracteristicas.map((caracteristica) => {
+              if (
+                !req.body.Caracteristicas.find(
+                  (c) => c.id === caracteristica.id
+                )
+              ) {
+                return caracteristica.destroy({ transaction });
               }
             }),
-            ...req.body.Caracteristicas.map(caracteristica=>{
-              if(!caracteristica.id){
-                return Caracteristicas.create({Nome: caracteristica.nome, Descricao: caracteristica.descricao})
+            ...req.body.Caracteristicas.map((caracteristica) => {
+              if (!caracteristica.id) {
+                return Caracteristica.create({
+                    ...caracteristica,
+                    AtributoId: atributo.id,
+                });
               }
-            })]);
+            }),
+          ]);
 
-        await atributo.update(req.body, {transaction});
-        await transaction.commit();
-        res.send(atributo)
-        }
-        catch(err){
+          await atributo.update(req.body, { transaction });
+          await transaction.commit();
+          res.send(atributo);
+        } catch (err) {
           console.log(err);
-          if(transaction) transaction.rollbavk();
+          if (transaction) transaction.rollback();
           res.sendStatus(500);
-        }}else{
-         res.sendStatus(404); 
         }
-    }).catch(err => {
-        console.log(err);
-        res.sendStatus(500);
-      });
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
 });
 
 atributoRouter.delete("/atributoCaracteristica/:id", (req, res) => {
   Atributo.findByPk(req.params.id)
-    .then(atributo => {
+    .then((atributo) => {
       if (atributo) {
         atributo.destroy().then((result) => {
           if (result) res.sendStatus(200);
