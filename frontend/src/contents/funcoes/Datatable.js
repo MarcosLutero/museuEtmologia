@@ -112,7 +112,9 @@ class Datatable extends React.Component {
           <tbody>
             {this.state.data.rows
               .filter((row) =>
-                row.columns.some((column) => column.includes(this.state.filter))
+                row.columns.some((column) =>
+                  column?.includes(this.state.filter)
+                )
               )
               .slice()
               .map((row, key) => (

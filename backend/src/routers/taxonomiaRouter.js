@@ -17,7 +17,7 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
       headers: ["Nome", "Denominacao"],
       rows: taxonomia.map((taxonomia) => ({
         id: taxonomia.id,
-        columns: [taxonomia.nome, taxonomia.Denominacao.denominacao, ],
+        columns: [taxonomia.nome, taxonomia.Denominacao.denominacao],
         actions: ["Editar", "Excluir"],
       })),
     });
@@ -26,12 +26,13 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
 
 taxonomiaRouter.get("/taxonomia/:id", (req, res) => {
   Taxonomia.findByPk(req.params.id, {
+    attributes: ["id", "nome", "DenominacaoId"],
     include: [
-      { model: Denominacao },
       {
         model: Caracteristica,
-        include: {
-          model: Atributo,
+        attributes: ["id", "AtributoId"],
+        through: {
+          attributes: [],
         },
       },
     ],
@@ -54,7 +55,17 @@ taxonomiaRouter.put("/taxonomia/:id", (req, res) => {
         const denominacao = await Denominacao.findByPk(req.body.DenominacaoId);
         taxonomia.update(req.body).then((taxonomia) => {
           if (taxonomia) {
-            res.sendStatus(200);
+            taxonomia
+              .setCaracteristicas(
+                req.body.Caracteristicas.map((c) => c.id).filter(
+                  (c) => c || false
+                )
+              )
+              .then(() => res.send(taxonomia))
+              .catch((err) => {
+                console.log(err);
+                res.sendStatus(500);
+              });
           } else {
             res.sendStatus(500);
           }
@@ -83,7 +94,11 @@ taxonomiaRouter.delete("/taxonomia/:id", (req, res) => {
 taxonomiaRouter.post("/taxonomia", (req, res) => {
   Taxonomia.create(req.body)
     .then((taxonomia) => {
-      res.send(taxonomia);
+      taxonomia
+        .setCaracteristicas(
+          req.body.Caracteristicas.map((c) => c.id).filter((c) => c || false)
+        )
+        .then(() => res.send(taxonomia));
     })
     .catch((err) => {
       console.log(err);

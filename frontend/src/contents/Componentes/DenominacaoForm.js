@@ -10,16 +10,19 @@ import {
   Tab,
   Tabs,
   Table,
+  FormControl,
+  InputGroup,
 } from "react-bootstrap";
 import Select from "react-select";
+import * as Icons from "@fortawesome/free-solid-svg-icons";
 
 class DenominaçãoForm extends React.Component {
   state = {
     denominações: [],
   };
   static defaultProps = {
-    values: {}
-  }
+    values: {},
+  };
 
   componentDidMount() {
     var config = {
@@ -65,10 +68,10 @@ class DenominaçãoForm extends React.Component {
           }}
           validate={(values) => {
             const errors = {};
-            if (!values.DenominacaoId)errors.DenominacaoId = "Campo obrigatório";
-            
-            if (!values.denominacao)errors.denominacao = "Campo obrigatório";
-            
+            if (!values.DenominacaoId)
+              errors.DenominacaoId = "Campo obrigatório";
+
+            if (!values.denominacao) errors.denominacao = "Campo obrigatório";
           }}
           onSubmit={(values, { setSubmitting }) => {
             this.save(values, () => setSubmitting(false));
@@ -116,61 +119,71 @@ class DenominaçãoForm extends React.Component {
                     </Tab>
                     <Tab eventKey="taxonomias " title="Taxonomias">
                       <legend>Taxonomias Cadastradas</legend>
-                      <Table striped>
-                        <tbody>
-                          {values.Taxonomias.map((taxonomias, key) => (
-                            <tr key={key}>
-                              <td>
-                                <Field
-                                  className="form-control"
-                                  name={`Taxonomias[${key}].id`}
-                                  type="hidden"
-                                />
-                                Taxonomia:
-                                <Field
-                                  className="form-control"
-                                  name={`Taxonomias[${key}].nome`}
-                                />
-                              </td>
-                              <td>
+                      <div className="mr-2 my-2 flex-fill">
+                        <InputGroup size="sm" style={{ width: "100%" }}>
+                          <InputGroup.Text variant="primary">
+                            <FontAwesomeIcon icon={Icons.faSearch} />
+                          </InputGroup.Text>
+                          <FormControl type="text" placeholder="Pesquisar" />
+                        </InputGroup>
+                      </div>
+                      <div className="divstyle">
+                        <Table striped>
+                          <tbody>
+                            {values.Taxonomias.map((taxonomias, key) => (
+                              <tr key={key}>
+                                <td>
+                                  <Field
+                                    className="form-control"
+                                    name={`Taxonomias[${key}].id`}
+                                    type="hidden"
+                                  />
+                                  Taxonomia:
+                                  <Field
+                                    className="form-control"
+                                    name={`Taxonomias[${key}].nome`}
+                                  />
+                                </td>
+                                <td>
+                                  <Button
+                                    className="form-control"
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={() =>
+                                      setFieldValue(
+                                        "Taxonomias",
+                                        values.Taxonomias.filter(
+                                          (c) => c !== taxonomias
+                                        )
+                                      )
+                                    }
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <td colSpan={2}>
                                 <Button
                                   className="form-control"
-                                  variant="danger"
-                                  size="sm"
+                                  variant="success"
                                   onClick={() =>
-                                    setFieldValue(
-                                      "Taxonomias",
-                                      values.Taxonomias.filter(
-                                        (c) => c !== taxonomias
-                                      )
-                                    )
+                                    setFieldValue("Taxonomias", [
+                                      ...values.Taxonomias,
+                                      { id: null, nome: "" },
+                                    ])
                                   }
                                 >
-                                  <FontAwesomeIcon icon={faTrash} />
+                                  Adicionar
                                 </Button>
                               </td>
                             </tr>
-                          ))}
-                        </tbody>
-                        <tfoot>
-                          <tr>
-                            <td colSpan={2}>
-                              <Button
-                                className="form-control"
-                                variant="success"
-                                onClick={() =>
-                                  setFieldValue("Taxonomias", [
-                                    ...values.Taxonomias,
-                                    { id: null, nome: "" },
-                                  ])
-                                }
-                              >
-                                Adicionar
-                              </Button>
-                            </td>
-                          </tr>
-                        </tfoot>
-                      </Table>
+                          </tfoot>
+                        </Table>
+                      </div>
                     </Tab>
                   </Tabs>
                   <FormGroup>

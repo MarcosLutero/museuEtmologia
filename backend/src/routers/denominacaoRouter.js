@@ -1,10 +1,10 @@
 import express from "express";
 import Denominacao from "../models/museu/Denominacao";
 import Taxonomia from "../models/museu/Taxonomia";
-import sequelize from '../database/museu';
+import sequelize from "../database/museu";
 
 const denominacaoRouter = express.Router();
-denominacaoRouter.get("/denominacao", (req, res) => {
+denominacaoRouter.get("/denominacao/", (req, res) => {
   Denominacao.findAll({
     include: [{ model: Denominacao, as: "Pai" }, { model: Taxonomia }],
   }).then((denominacao) => {
@@ -51,8 +51,7 @@ denominacaoRouter.get("/denominacao/:id", (req, res) => {
       if (denominacao) res.send(denominacao);
       else res.sendStatus(404);
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
       res.sendStatus(500);
     });
 });
@@ -60,51 +59,46 @@ denominacaoRouter.get("/denominacao/:id", (req, res) => {
 denominacaoRouter.post("/denominacao", (req, res) => {
   Denominacao.create(req.body)
     .then((denominacao) => {
-      Promise.all(
-        res.body.Taxonomias.map((taxonomia) =>
-          Taxonomia.create({
-            ...taxonomia,
-            DenominacaoId: denominacao.id,
-          })
+      denominacao
+        .setTaxonomias(
+          req.body.Taxonomias.map((t) => t.id).filter((t) => t || false)
         )
-      )
-        .then(() => {
-          res.send(denominacao);
-        })
-        .catch((err) => {
-          console.log(err);
-          res.sendStatus(500);
-        });
+        .then(() => res.send(denominacao));
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
       res.sendStatus(500, "error");
     });
 });
 
 denominacaoRouter.put("/denominacao/:id", (req, res) => {
-  Denominacao.findByPk(req.params.id, {include: Taxonomia})
-    .then( async (denominacao) => {
+  Denominacao.findByPk(req.params.id, { include: Taxonomia })
+    .then(async (denominacao) => {
       if (denominacao) {
         const transaction = await sequelize.transaction();
         try {
           await Promise.all([
-            ...denominacao.Taxonomias.map((taxonomia)=>{
-              if(
-                !req.body.Taxonomias.find(
-                  (t)=>t.id === taxonomia.id
-                  )){
+            ...denominacao.Taxonomias.map((taxonomia) => {
+              if (!req.body.Taxonomias.find((t) => t.id === taxonomia.id)) {
                 return taxonomia.destroy({ transaction });
               }
             }),
-            ...req.body.Taxonomias.map((taxonomia)=>{
-              if(!taxonomia.id){
-                return Taxonomia.create({
-                  ...taxonomia,
-                  DenominacaoId: denominacao.id,
-              });
-            }
-            })
-          ])
+            ...req.body.Taxonomias.map((taxonomia) => {
+              if (!taxonomia.id) {
+                return Taxonomia.create(
+                  {
+                    ...taxonomia,
+                    DenominacaoId: denominacao.id,
+                  },
+                  { transaction }
+                );
+              } else {
+                return Taxonomia.findByPk(taxonomia.id, { transaction }).then(
+                  (t) => t.update(taxonomia, { transaction })
+                );
+              }
+            }),
+          ]);
           await denominacao.update(req.body, { transaction });
           await transaction.commit();
           res.send(denominacao);

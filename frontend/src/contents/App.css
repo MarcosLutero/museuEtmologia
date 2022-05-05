@@ -9,8 +9,8 @@
 	border:0;
 }
 
-section{
-  position: fixed;
+body {
+  /*position: fixed;*/
   background-image: url("../img/fundo.jpg");
   height: 100vh;
   width: 100vw;
@@ -33,3 +33,11 @@ section .layout {
 .button-out{
   margin-left: -9rem;
 }
+
+.divstyle{
+  overflow-y: scroll;
+  width: 480px;
+  float: left;
+  height: 400px;
+  position: relative;
+};

@@ -1,7 +1,7 @@
 import express from "express";
 import Atributo from "../models/museu/Atributo";
 import Caracteristica from "../models/museu/Caracteristica";
-import sequelize from '../database/museu';
+import sequelize from "../database/museu";
 
 const atributoRouter = express.Router();
 atributoRouter.get("/atributoCaracteristica/", (req, res) => {
@@ -25,14 +25,34 @@ atributoRouter.get("/atributoCaracteristica/", (req, res) => {
   });
 });
 
+atributoRouter.get("/atributoCaracteristica/options", (req, res) => {
+  Atributo.findAll({
+    attributes: [
+      ["id", "value"],
+      ["nome", "label"],
+    ],
+    include:{
+      model:Caracteristica,
+      attributes: [
+        ["id", "value"],
+        ["nome", "label"],
+      ]
+    }
+  })
+    .then((options) => {
+      res.send(options);
+    })
+    .catch((err) => {
+      res.status(500).send(err.toString());
+    });
+});
+
 atributoRouter.get("/atributoCaracteristica/:id", (req, res) => {
   Atributo.findByPk(req.params.id, {
-    include: [
-      {
-        model: Caracteristica,
-        atributes: ["nome", "descricao"],
-      },
-    ],
+    include: {
+      model: Caracteristica,
+      atributes: ["nome", "descricao"],
+    },
   })
     .then((atributo) => {
       if (atributo) res.send(atributo);
@@ -87,9 +107,11 @@ atributoRouter.put("/atributoCaracteristica/:id", (req, res) => {
             ...req.body.Caracteristicas.map((caracteristica) => {
               if (!caracteristica.id) {
                 return Caracteristica.create({
-                    ...caracteristica,
-                    AtributoId: atributo.id,
-                });
+                  ...caracteristica,
+                  AtributoId: atributo.id,
+                },{transaction});
+              } else {
+                return Caracteristica.findByPk(caracteristica.id, {transaction}).then(c => c.update(caracteristica,{transaction}));
               }
             }),
           ]);
