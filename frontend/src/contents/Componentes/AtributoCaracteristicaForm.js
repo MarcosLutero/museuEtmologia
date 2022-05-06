@@ -13,7 +13,6 @@ import {
   Table,
   InputGroup,
   FormControl,
-  Pagination,
 } from "react-bootstrap";
 import Select from "react-select";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +23,7 @@ class AtributoCaracteristicaForm extends React.Component {
 
   state = {
     filter: "",
-    result : ""
+    result: "",
   };
 
   save(values, callback) {
@@ -54,39 +53,19 @@ class AtributoCaracteristicaForm extends React.Component {
       { value: "Descrição Ecológica", label: "Descrição Ecológica" },
     ];
 
-    const cabecalho = (
-      <div className="d-flex align-items-stretch flex-wrap">
-        <div className="mr-2 my-2 flex-fill">
-          <InputGroup size="sm" style={{ width: "100%" }}>
-            <InputGroup.Text variant="primary">
-              <FontAwesomeIcon icon={Icons.faSearch} />
-            </InputGroup.Text>
-            <FormControl
-              type="text"
-              placeholder="Pesquisar"
-              value={this.state.filter}
-              onChange={(event) =>
-                this.setState(() => ({
-                  filter: event.target.value,
-                }))
-              }
-            />
-          </InputGroup>
-        </div>
-      </div>
-    );
-
     return (
       <Formik
         initialValues={{
           ...this.props.values,
-          Caracteristicas: this.props.values.Caracteristicas ?? [],
+          Caracteristicas:
+            this.props.values.Caracteristicas?.sort((a, b) =>
+              a.nome.localeCompare(b.nome)
+            ) ?? [],
         }}
         validate={(values) => {
           const errors = {};
           if (!values.nome) errors.nome = "Campo obrigatório";
           if (!values.identificacao) errors.identificacao = "Campo obrigatório";
-          console.log(values);
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
@@ -129,19 +108,17 @@ class AtributoCaracteristicaForm extends React.Component {
                         )}
                         onChange={(option) => {
                           setFieldValue("identificacao", option?.value);
+                          clearTimeout(this.timeout);
                         }}
                       />
                     </FormGroup>
                   </Tab>
                   <Tab eventKey="detalhes" title="Detalhes">
                     <legend>Caracteristicas Cadastradas</legend>
-                    {cabecalho}
                     <div className="divstyle">
                       <Table striped>
                         <tbody>
-                          {values.Caracteristicas.filter(caracteristica =>
-                            caracteristica.nome?.includes(this.state.filter)|| caracteristica.descricao?.includes(this.state.filter)
-                          ).map((caracteristica, key) => (
+                          {values.Caracteristicas.map((caracteristica, key) => (
                             <tr key={key}>
                               <td>
                                 Nome:
@@ -176,26 +153,20 @@ class AtributoCaracteristicaForm extends React.Component {
                             </tr>
                           ))}
                         </tbody>
-                        <tfoot>
-                          <tr>
-                            <td colSpan={2}>
-                              <Button
-                                className="form-control"
-                                variant="success"
-                                onClick={() =>
-                                  setFieldValue("Caracteristicas", [
-                                    ...values.Caracteristicas,
-                                    { id: null, nome: "", descricao: "" },
-                                  ])
-                                }
-                              >
-                                Adicionar
-                              </Button>
-                            </td>
-                          </tr>
-                        </tfoot>
                       </Table>
                     </div>
+                    <Button
+                      className="form-control"
+                      variant="success"
+                      onClick={() =>
+                        setFieldValue("Caracteristicas", [
+                          ...values.Caracteristicas,
+                          { id: null, nome: "", descricao: "" },
+                        ])
+                      }
+                    >
+                      Adicionar
+                    </Button>
                   </Tab>
                 </Tabs>
                 <FormGroup>

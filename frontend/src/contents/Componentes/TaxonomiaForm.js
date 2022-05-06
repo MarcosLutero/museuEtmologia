@@ -147,43 +147,47 @@ class TaxonomiaForm extends React.Component {
                       </Tab>
                       <Tab eventKey="caracteristicas" title="Características">
                         <legend>Caracteristicas Cadastradas</legend>
-                        <Table striped>
-                          <tbody>
-                            {this.state.atributos.map((atributo, key) => (
-                              <tr key={key}>
-                                <td>{atributo.label}</td>
-                                <td>
-                                  <Select
-                                    isClearable={true}
-                                    noOptionsMessage={() => "Nada encontrado."}
-                                    placeholder="Pesquisar..."
-                                    options={atributo.Caracteristicas}
-                                    value={atributo.Caracteristicas.find(
-                                      (option) =>
-                                        option.value ===
-                                        values.Caracteristicas.find(
-                                          (c) => c.id === option.value
-                                        )?.id
-                                    )}
-                                    onChange={(option) =>
-                                      setFieldValue(
-                                        "Caracteristicas",
-                                        values.Caracteristicas.map((c) =>
-                                          c.AtributoId === atributo.value
-                                            ? {
-                                                id: option?.value,
-                                                AtributoId: atributo.value,
-                                              }
-                                            : c
+                        <div className="divstyle">
+                          <Table striped>
+                            <tbody>
+                              {this.state.atributos.map((atributo, key) => (
+                                <tr key={key}>
+                                  <td>{atributo.label}</td>
+                                  <td>
+                                    <Select
+                                      isClearable={true}
+                                      noOptionsMessage={() =>
+                                        "Nada encontrado."
+                                      }
+                                      placeholder="Pesquisar..."
+                                      options={atributo.Caracteristicas}
+                                      value={atributo.Caracteristicas.find(
+                                        (option) =>
+                                          option.value ===
+                                          values.Caracteristicas.find(
+                                            (c) => c.id === option.value
+                                          )?.id
+                                      )}
+                                      onChange={(option) =>
+                                        setFieldValue(
+                                          "Caracteristicas",
+                                          values.Caracteristicas.map((c) =>
+                                            c.AtributoId === atributo.value
+                                              ? {
+                                                  id: option?.value,
+                                                  AtributoId: atributo.value,
+                                                }
+                                              : c
+                                          )
                                         )
-                                      )
-                                    }
-                                  />
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </Table>
+                                      }
+                                    />
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        </div>
                       </Tab>
                     </Tabs>
                     <FormGroup>

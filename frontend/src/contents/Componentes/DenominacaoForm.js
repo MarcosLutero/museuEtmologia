@@ -19,6 +19,7 @@ import * as Icons from "@fortawesome/free-solid-svg-icons";
 class DenominaçãoForm extends React.Component {
   state = {
     denominações: [],
+    filter: "",
   };
   static defaultProps = {
     values: {},
@@ -64,7 +65,10 @@ class DenominaçãoForm extends React.Component {
         <Formik
           initialValues={{
             ...this.props.values,
-            Taxonomias: this.props.values.Taxonomias ?? [],
+            Taxonomias:
+              this.props.values.Taxonomias.sort((a, b) =>
+                a.nome.localeCompare(b.nome)
+              ) ?? [],
           }}
           validate={(values) => {
             const errors = {};
@@ -119,14 +123,6 @@ class DenominaçãoForm extends React.Component {
                     </Tab>
                     <Tab eventKey="taxonomias " title="Taxonomias">
                       <legend>Taxonomias Cadastradas</legend>
-                      <div className="mr-2 my-2 flex-fill">
-                        <InputGroup size="sm" style={{ width: "100%" }}>
-                          <InputGroup.Text variant="primary">
-                            <FontAwesomeIcon icon={Icons.faSearch} />
-                          </InputGroup.Text>
-                          <FormControl type="text" placeholder="Pesquisar" />
-                        </InputGroup>
-                      </div>
                       <div className="divstyle">
                         <Table striped>
                           <tbody>
@@ -164,26 +160,20 @@ class DenominaçãoForm extends React.Component {
                               </tr>
                             ))}
                           </tbody>
-                          <tfoot>
-                            <tr>
-                              <td colSpan={2}>
-                                <Button
-                                  className="form-control"
-                                  variant="success"
-                                  onClick={() =>
-                                    setFieldValue("Taxonomias", [
-                                      ...values.Taxonomias,
-                                      { id: null, nome: "" },
-                                    ])
-                                  }
-                                >
-                                  Adicionar
-                                </Button>
-                              </td>
-                            </tr>
-                          </tfoot>
                         </Table>
                       </div>
+                      <Button
+                        className="form-control"
+                        variant="success"
+                        onClick={() =>
+                          setFieldValue("Taxonomias", [
+                            ...values.Taxonomias,
+                            { id: null, nome: "" },
+                          ])
+                        }
+                      >
+                        Adicionar
+                      </Button>
                     </Tab>
                   </Tabs>
                   <FormGroup>

@@ -6,7 +6,8 @@ import sequelize from "../database/museu";
 const atributoRouter = express.Router();
 atributoRouter.get("/atributoCaracteristica/", (req, res) => {
   Atributo.findAll({
-    include: [{ model: Caracteristica }],
+    include: [{ model: Caracteristica}],
+    order: sequelize.literal("nome", "ASC")
   }).then((atributo) => {
     res.send({
       headers: ["Nome", "Identificação", "Nome da Caracteristica"],
@@ -36,7 +37,7 @@ atributoRouter.get("/atributoCaracteristica/options", (req, res) => {
       attributes: [
         ["id", "value"],
         ["nome", "label"],
-      ]
+      ],
     }
   })
     .then((options) => {
