@@ -92,13 +92,8 @@ class TaxonomiaForm extends React.Component {
             }}
             validate={(values) => {
               const errors = {};
-              if (!values.nome) {
-                errors.nome = "Campo obrigatório";
-              }
-              if (!values.DenominacaoId) {
-                errors.DenominacaoId = "Campo obrigatório";
-              }
-              console.log(values);
+              if (!values.nome) errors.nome = "Campo obrigatório";
+              if (!values.DenominacaoId)errors.DenominacaoId = "Campo obrigatório";
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {

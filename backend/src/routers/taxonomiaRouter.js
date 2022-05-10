@@ -1,6 +1,4 @@
 import express, { query } from "express";
-import { Op } from "sequelize";
-import Atributo from "../models/museu/Atributo";
 import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
 import Taxonomia from "../models/museu/Taxonomia";
@@ -17,11 +15,33 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
       headers: ["Nome", "Denominacao"],
       rows: taxonomia.map((taxonomia) => ({
         id: taxonomia.id,
-        columns: [taxonomia.nome, taxonomia.Denominacao.denominacao],
+        columns: [taxonomia.nome, taxonomia.Denominacao?.denominacao],
         actions: ["Editar", "Excluir"],
       })),
     });
   });
+});
+
+
+taxonomiaRouter.get("/taxonomia/options", (req, res) => {
+  Taxonomia.findAll({
+    attributes: [
+      ["id", "value"],
+      ["nome", "label"],
+    ],include:{
+      model: Denominacao,
+      attributes:[
+        ['id', 'value'],
+        ['denominacao', 'label']
+      ]
+    }
+  })
+    .then((options) => {
+      res.send(options);
+    })
+    .catch((err) => {
+      res.status(500).send(err.toString());
+    });
 });
 
 taxonomiaRouter.get("/taxonomia/:id", (req, res) => {

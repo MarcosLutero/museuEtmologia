@@ -10,11 +10,9 @@ import {
   Tab,
   Tabs,
   Table,
-  FormControl,
-  InputGroup,
 } from "react-bootstrap";
 import Select from "react-select";
-import * as Icons from "@fortawesome/free-solid-svg-icons";
+
 
 class DenominaçãoForm extends React.Component {
   state = {
@@ -66,7 +64,7 @@ class DenominaçãoForm extends React.Component {
           initialValues={{
             ...this.props.values,
             Taxonomias:
-              this.props.values.Taxonomias.sort((a, b) =>
+              this.props.values.Taxonomias?.sort((a, b) =>
                 a.nome.localeCompare(b.nome)
               ) ?? [],
           }}
@@ -168,7 +166,7 @@ class DenominaçãoForm extends React.Component {
                         onClick={() =>
                           setFieldValue("Taxonomias", [
                             ...values.Taxonomias,
-                            { id: null, nome: "" },
+                            { id: this.props.values.id? null: undefined, nome: "" },
                           ])
                         }
                       >

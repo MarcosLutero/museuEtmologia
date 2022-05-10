@@ -11,8 +11,6 @@ import {
   Tabs,
   Tab,
   Table,
-  InputGroup,
-  FormControl,
 } from "react-bootstrap";
 import Select from "react-select";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
@@ -161,7 +159,11 @@ class AtributoCaracteristicaForm extends React.Component {
                       onClick={() =>
                         setFieldValue("Caracteristicas", [
                           ...values.Caracteristicas,
-                          { id: null, nome: "", descricao: "" },
+                          {
+                            id: this.props.values.id ? null : undefined,
+                            nome: "",
+                            descricao: "",
+                          },
                         ])
                       }
                     >

@@ -57,14 +57,8 @@ denominacaoRouter.get("/denominacao/:id", (req, res) => {
 });
 
 denominacaoRouter.post("/denominacao", (req, res) => {
-  Denominacao.create(req.body)
-    .then((denominacao) => {
-      denominacao
-        .setTaxonomias(
-          req.body.Taxonomias.map((t) => t.id).filter((t) => t || false)
-        )
-        .then(() => res.send(denominacao));
-    })
+  Denominacao.create(req.body, {include: [Taxonomia]})
+    .then((denominacao) => res.send(denominacao))
     .catch((err) => {
       console.log(err);
       res.sendStatus(500, "error");

@@ -1,5 +1,4 @@
-import express, { query } from "express";
-import { Op } from "sequelize";
+import express from "express";
 import Atributo from "../models/museu/Atributo";
 import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
@@ -7,97 +6,30 @@ import Especime from "../models/museu/Especime";
 import Taxonomia from "../models/museu/Taxonomia";
 
 const especimeRouter = express.Router();
-
 especimeRouter.get("/especime", (req, res) => {
-  const queryFilter = {};
-
-  if (req.query.filter) {
-    queryFilter[Op.or] = {
-      nome: {
-        [Op.like]: "%" + req.query.filter + "%",
-      },
-    };
-  }
-  const order = req.query.order
-    ? req.query.dir
-      ? [[...req.query.order.split("."), req.query.dir]]
-      : [[...req.query.order.split(".")]]
-    : undefined;
-  Especime.findAndCountAll({
-    where: {
-      [Op.and]: {
-        ...queryFilter,
-      },
-    },
-    order: order,
-    attributes: ["id", "nome", "descricao"],
+  Especime.findAll({
     include: [
       {
         model: Taxonomia,
-        attributes: ["nome"],
-        through: { attributes: [] },
-        order: [
-          ["Denominacao", "DenominacaoId", "DESC"],
-          ["Denominacao", "id", "ASC"],
-        ],
         include: {
           model: Denominacao,
-          attributes: ["denominacao"],
         },
       },
     ],
-    distinct: true,
-    limit:
-      parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : undefined,
-    offset:
-      parseInt(req.query.offset) > 0 ? parseInt(req.query.offset) : undefined,
-  }).then((result) => {
+  }).then((especie) => {
     res.send({
-      raw: result.rows,
-      headers: [
-        { title: "Nome", order: "nome" },
-        { title: "Descricao", order: "descricao" },
-        { title: "Taxonomia", order: "Taxonomia.nome" },
-      ],
-      count: result.count,
-      rows: result.rows.map((especime) => ({
-        values: [
+      headers: ["Nome", "Descrição", "Denominação/Taxonomia"],
+      rows: especie.map((especime) => ({
+        id: especime.id,
+        columns: [
           especime.nome,
           especime.descricao,
           especime.Taxonomias.map(
             (taxonomia) =>
               taxonomia.Denominacao.denominacao + ": " + taxonomia.nome
-          ).join(", "),
+          ).join("; "),
         ],
-        actions: [
-          {
-            id: especime.id,
-            name: "edit",
-
-            //Exigido pelo Datatable
-            icon: "faPencilAlt",
-            title: "Editar",
-            variant: "outline-info",
-          },
-          {
-            id: especime.id,
-            name: "relatorio",
-
-            //Exigido pelo Datatable
-            icon: "faFile",
-            title: "Relatório",
-            variant: "outline-success",
-          },
-          {
-            id: especime.id,
-            name: "delete",
-
-            //Exigido pelo Datatable
-            icon: "faTrash",
-            title: "Excluir",
-            variant: "outline-danger",
-          },
-        ],
+        actions: ["Editar", "Excluir"],
       })),
     });
   });
@@ -105,7 +37,6 @@ especimeRouter.get("/especime", (req, res) => {
 
 especimeRouter.get("/especime/:id", (req, res) => {
   Especime.findByPk(req.params.id, {
-    attributes: ["id", "nome", "descricao"],
     include: [
       {
         model: Taxonomia,
@@ -115,25 +46,31 @@ especimeRouter.get("/especime/:id", (req, res) => {
           ["Denominacao", "DenominacaoId", "DESC"],
           ["Denominacao", "id", "ASC"],
         ],
-        include: [{
-          model: Denominacao,
-          attributes: ["denominacao"],
-        },
-        {
-          model: Caracteristica,
-          attributes:["nome", "descricao"],
-          include: {
-            model: Atributo,
-            attributes:["nome"],
+        include: [
+          {
+            model: Denominacao,
+            attributes: ["denominacao"],
           },
-          through: { attributes: [] },
-        }]
+          {
+            model: Caracteristica,
+            attributes: ["nome", "descricao"],
+            include: {
+              model: Atributo,
+              attributes: ["nome"],
+            },
+            through: { attributes: [] },
+          },
+        ],
       },
     ],
   })
     .then((especime) => {
-      if (especime) res.send(especime);
-      else res.sendStatus(404);
+      if (especime) {
+        res.send(especime);
+      } else {
+        console.log(especime);
+        res.sendStatus(404);
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -158,7 +95,9 @@ especimeRouter.put("/especime/:id", (req, res) => {
         });
       } else es.sendStatus(404);
     })
-    .catch((err) => res.sendStatus(500));
+    .catch((err) => {
+      res.sendStatus(500);
+    });
 });
 
 especimeRouter.post("/especime", (req, res) => {
@@ -166,7 +105,9 @@ especimeRouter.post("/especime", (req, res) => {
     .then((especime) => {
       console.log(especime);
       especime
-        .setTaxonomias(req.body.Taxonomias)
+        .setTaxonomias(
+          req.body.Taxonomias.map((t) => t.id).filter((t) => t || false)
+        )
         .then(() => res.send(especime))
         .catch((err) => {
           console.log(err);

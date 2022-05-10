@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../../database/museu.js";
 
-const Caracteristica_Taxonomia = sequelize.define(
-  "Caracteristica_Taxonomia",
+const CaracteristicaTaxonomia = sequelize.define(
+  "CaracteristicaTaxonomia",
   {
   },
   {
@@ -14,4 +14,4 @@ const Caracteristica_Taxonomia = sequelize.define(
   }
 );
 
-export default Caracteristica_Taxonomia;
+export default CaracteristicaTaxonomia;

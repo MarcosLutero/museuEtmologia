@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../../database/museu.js";
 
-const Taxonomia_Especime = sequelize.define(
-  "Taxonomia_Especime",{
+const TaxonomiaEspecime = sequelize.define(
+  "TaxonomiaEspecime",{
     
   },{
     paranoid: true,
@@ -13,4 +13,4 @@ const Taxonomia_Especime = sequelize.define(
   }
 );
 
-export default Taxonomia_Especime;
+export default TaxonomiaEspecime;

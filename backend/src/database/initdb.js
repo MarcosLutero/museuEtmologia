@@ -5,8 +5,8 @@ import Denominacao from "../models/museu/Denominacao";
 import Especime from "../models/museu/Especime";
 import Foto from "../models/museu/Foto";
 import Taxonomia from "../models/museu/Taxonomia";
-import Taxonomia_Especime from "../models/museu/Taxonomia_Especime";
-import Caracteristica_Taxonomia from "../models/museu/Caracteristica_Taxonomia";
+import TaxonomiaEspecime from "../models/museu/TaxonomiaEspecime";
+import CaracteristicaTaxonomia from "../models/museu/CaracteristicaTaxonomia";
 
 const initdb = () =>
   new Promise((resolve, reject) => {
@@ -38,10 +38,10 @@ const initdb = () =>
       },
     });
     Taxonomia.belongsToMany(Especime, {
-      through: Taxonomia_Especime,
+      through: TaxonomiaEspecime,
     });
     Especime.belongsToMany(Taxonomia, {
-      through: Taxonomia_Especime,
+      through: TaxonomiaEspecime,
     });
     Especime.hasMany(Foto, {
       onDelete: "CASCADE",
@@ -56,10 +56,10 @@ const initdb = () =>
       },
     });
     Caracteristica.belongsToMany(Taxonomia, {
-      through: Caracteristica_Taxonomia,
+      through: CaracteristicaTaxonomia,
     });
     Taxonomia.belongsToMany(Caracteristica, {
-      through: Caracteristica_Taxonomia,
+      through: CaracteristicaTaxonomia,
     });
     Atributo.hasMany(Caracteristica, {
       onDelete: "CASCADE",
