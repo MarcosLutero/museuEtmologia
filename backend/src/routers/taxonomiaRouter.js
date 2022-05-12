@@ -7,34 +7,35 @@ const taxonomiaRouter = express.Router();
 
 taxonomiaRouter.get("/taxonomia/", (req, res) => {
   Taxonomia.findAll({
-    include: {
-      model: Denominacao,
-    },
+    include: [
+      { model: Taxonomia, as: "Pai" },
+      { model: Denominacao, attributes: ["nome"] },
+    ],
   }).then((taxonomia) => {
+    {
+      console.log(taxonomia);
+    }
     res.send({
-      headers: ["Nome", "Denominacao"],
+      headers: ["Nome", "Pertence a", "Denominação"],
       rows: taxonomia.map((taxonomia) => ({
         id: taxonomia.id,
-        columns: [taxonomia.nome, taxonomia.Denominacao?.denominacao],
+        columns: [
+          taxonomia.nome,
+          taxonomia.Pai?.nome ?? "(Raiz)",
+          taxonomia.Denominacao.nome,
+        ],
         actions: ["Editar", "Excluir"],
       })),
     });
   });
 });
 
-
 taxonomiaRouter.get("/taxonomia/options", (req, res) => {
   Taxonomia.findAll({
     attributes: [
       ["id", "value"],
       ["nome", "label"],
-    ],include:{
-      model: Denominacao,
-      attributes:[
-        ['id', 'value'],
-        ['denominacao', 'label']
-      ]
-    }
+    ],
   })
     .then((options) => {
       res.send(options);
@@ -46,7 +47,7 @@ taxonomiaRouter.get("/taxonomia/options", (req, res) => {
 
 taxonomiaRouter.get("/taxonomia/:id", (req, res) => {
   Taxonomia.findByPk(req.params.id, {
-    attributes: ["id", "nome", "DenominacaoId"],
+    attributes: ["id", "nome", "DenominacaoId", "taxonomia_id"],
     include: [
       {
         model: Caracteristica,

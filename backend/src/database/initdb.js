@@ -2,29 +2,13 @@ import MuseuSchema from "./museu";
 import Atributo from "../models/museu/Atributo";
 import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
-import Especime from "../models/museu/Especime";
 import Foto from "../models/museu/Foto";
 import Taxonomia from "../models/museu/Taxonomia";
-import TaxonomiaEspecime from "../models/museu/TaxonomiaEspecime";
 import CaracteristicaTaxonomia from "../models/museu/CaracteristicaTaxonomia";
 
 const initdb = () =>
   new Promise((resolve, reject) => {
-    Denominacao.hasMany(Denominacao, {
-      as: "Filhos",
-      onDelete: "CASCADE",
-      foreignKey: {
-        allowNull: true,
-      },
-    });
-    Denominacao.belongsTo(Denominacao, {
-      as: "Pai",
-      onDelete: "CASCADE",
-      foreignKey: {
-        name: "denominacao_id",
-        allowNull: true,
-      },
-    });
+    
     Denominacao.hasMany(Taxonomia, {
       onDelete: "CASCADE",
       foreignKey: {
@@ -37,30 +21,46 @@ const initdb = () =>
         allowNull: false,
       },
     });
-    Taxonomia.belongsToMany(Especime, {
-      through: TaxonomiaEspecime,
+
+    Taxonomia.belongsTo(Taxonomia, {
+      as: "Pai",
+      onDelete: "RESTRICT",
+      foreignKey: {
+        name: "taxonomia_id",
+        allowNull: true,
+      },
     });
-    Especime.belongsToMany(Taxonomia, {
-      through: TaxonomiaEspecime,
+
+    Taxonomia.hasMany(Taxonomia, {
+      as: "Filhos",
+      onDelete: "RESTRICT",
+      foreignKey: {
+        name: "taxonomia_id",
+        allowNull: true,
+      },
     });
-    Especime.hasMany(Foto, {
+
+    
+    Taxonomia.hasMany(Foto, {
       onDelete: "CASCADE",
       foreignKey: {
         allowNull: false,
       },
     });
-    Foto.belongsTo(Especime, {
+    Foto.belongsTo(Taxonomia, {
       onDelete: "RESTRICT",
       foreignKey: {
         allowNull: false,
       },
     });
+
     Caracteristica.belongsToMany(Taxonomia, {
       through: CaracteristicaTaxonomia,
     });
     Taxonomia.belongsToMany(Caracteristica, {
       through: CaracteristicaTaxonomia,
     });
+
     Atributo.hasMany(Caracteristica, {
       onDelete: "CASCADE",
       foreignKey: {

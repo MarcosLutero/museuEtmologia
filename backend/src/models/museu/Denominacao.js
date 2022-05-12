@@ -4,7 +4,7 @@ import sequelize from "../../database/museu.js";
 const Denominacao = sequelize.define(
   "Denominacao",
   {
-    denominacao: {
+    nome: {
       type: DataTypes.STRING,
       allowNull: false,
     },

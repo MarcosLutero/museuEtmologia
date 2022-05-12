@@ -1,13 +1,11 @@
 import React from "react";
 import { Card, ListGroup } from "react-bootstrap";
-import EspecimeList from "../Componentes/EspecimeList.js";
 import TaxonomiaList from "../Componentes/TaxonomiaList.js";
 import AtributoCaracteristicaList from "../Componentes/AtributoCaracteristicaList.js";
 import DenominacaoList from "../Componentes/DenominacaoList.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClipboardList,
-  faDog,
   faIndent,
   faPaw,
 } from "@fortawesome/free-solid-svg-icons";
@@ -23,14 +21,6 @@ class MenuLateral extends React.Component {
         </Card.Header>
         <Card.Body>
           <ListGroup>
-          <ListGroup.Item
-              role="button"
-              onClick={() => this.props.setPagina(EspecimeList)}
-            >
-              <FontAwesomeIcon icon={faDog} />
-              &nbsp;Cadastar Especime
-            </ListGroup.Item>
-
             <ListGroup.Item
               role="button"
               onClick={() => this.props.setPagina(TaxonomiaList)}

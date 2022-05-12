@@ -15,7 +15,8 @@ import Select from "react-select";
 
 class TaxonomiaForm extends React.Component {
   state = {
-    denominações: [],
+    taxonomias: [],
+    denominacaos: [],
     atributos: [],
     loaded: false,
   };
@@ -28,9 +29,9 @@ class TaxonomiaForm extends React.Component {
     Promise.all([
       new Promise((resolve, reject) =>
         axios
-          .get("http://localhost:8080/atributoCaracteristica/options", config)
+          .get("http://localhost:8080/taxonomia/options", config)
           .then((response) => {
-            this.setState(() => ({ atributos: response.data }), resolve());
+            this.setState(() => ({ taxonomias: response.data }), resolve());
           })
           .catch((err) => {
             reject(err);
@@ -40,7 +41,17 @@ class TaxonomiaForm extends React.Component {
         axios
           .get("http://localhost:8080/denominacao/options", config)
           .then((response) => {
-            this.setState(() => ({ denominações: response.data }), resolve());
+            this.setState(() => ({ denominacaos: response.data }), resolve());
+          })
+          .catch((err) => {
+            reject(err);
+          })
+      ),
+      new Promise((resolve, reject) =>
+        axios
+          .get("http://localhost:8080/atributoCaracteristica/options", config)
+          .then((response) => {
+            this.setState(() => ({ atributos: response.data }), resolve());
           })
           .catch((err) => {
             reject(err);
@@ -82,19 +93,18 @@ class TaxonomiaForm extends React.Component {
           <Formik
             initialValues={{
               ...this.props.values,
-              Caracteristicas: this.state.atributos.map(
-                (atributo) =>
-                  this.props.values.Caracteristicas?.find(
-                    (c) => c.AtributoId === atributo.value
-                  ) || { id: null, AtributoId: atributo.value }
-              ),
-              DenominacaoId: this.props.values?.DenominacaoId,
+              Caracteristicas:
+                this.props.values.Caracteristicas?.sort((a, b) =>
+                  a.nome.localeCompare(b.nome)
+                ) ?? [],
             }}
             validate={(values) => {
               const errors = {};
               if (!values.nome) errors.nome = "Campo obrigatório";
-              if (!values.DenominacaoId)errors.DenominacaoId = "Campo obrigatório";
-              return errors;
+              if (!values.DenominacaoId)
+                errors.DenominacaoId = "Campo obrigatório";
+              if (!values.taxonomia_id)
+                errors.taxonomia_id = "Campo obrigatório";
             }}
             onSubmit={(values, { setSubmitting }) => {
               this.save(values, () => setSubmitting(false));
@@ -103,6 +113,7 @@ class TaxonomiaForm extends React.Component {
             {({ isSubmitting, values, setFieldValue }) => {
               return (
                 <>
+                  {console.log(values)}
                   <Form>
                     <Tabs defaultActiveKey="detalhes">
                       <Tab eventKey="detalhes" title="Detalhes">
@@ -130,12 +141,31 @@ class TaxonomiaForm extends React.Component {
                           <Select
                             noOptionsMessage={() => "Nada encontrado."}
                             placeholder="Pesquisar..."
-                            options={this.state.denominações}
-                            value={this.state.denominações.find(
+                            options={this.state.denominacaos}
+                            value={this.state.denominacaos.find(
                               (option) => option.value === values.DenominacaoId
                             )}
                             onChange={(option) =>
                               setFieldValue("DenominacaoId", option?.value)
+                            }
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <BSForm.Label>Taxonomia Pai</BSForm.Label>
+                          <ErrorMessage
+                            name="taxonomia_id"
+                            component="span"
+                            className="text-danger small ml-2"
+                          />
+                          <Select
+                            noOptionsMessage={() => "Nada encontrado."}
+                            placeholder="Pesquisar..."
+                            options={this.state.taxonomias}
+                            value={this.state.taxonomias.find(
+                              (option) => option.value === values.taxonomia_id
+                            )}
+                            onChange={(option) =>
+                              setFieldValue("taxonomia_id", option?.value)
                             }
                           />
                         </FormGroup>
@@ -183,6 +213,22 @@ class TaxonomiaForm extends React.Component {
                             </tbody>
                           </Table>
                         </div>
+                        <Button
+                          className="form-control"
+                          variant="success"
+                          onClick={() =>
+                            setFieldValue("Caracteristicas", [
+                              ...values.Caracteristicas,
+                              {
+                                id: this.props.values.id ? null : undefined,
+                                nome: "",
+                                descricao: "",
+                              },
+                            ])
+                          }
+                        >
+                          Adicionar
+                        </Button>
                       </Tab>
                     </Tabs>
                     <FormGroup>
