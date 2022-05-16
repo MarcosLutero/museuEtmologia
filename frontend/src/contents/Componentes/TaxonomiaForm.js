@@ -113,7 +113,7 @@ class TaxonomiaForm extends React.Component {
             {({ isSubmitting, values, setFieldValue }) => {
               return (
                 <>
-                  {console.log(values)}
+                  {console.log(values.Caracteristicas)}
                   <Form>
                     <Tabs defaultActiveKey="detalhes">
                       <Tab eventKey="detalhes" title="Detalhes">
@@ -169,6 +169,7 @@ class TaxonomiaForm extends React.Component {
                             }
                           />
                         </FormGroup>
+                        adcionar foto
                       </Tab>
                       <Tab eventKey="caracteristicas" title="Características">
                         <legend>Caracteristicas Cadastradas</legend>
@@ -201,6 +202,7 @@ class TaxonomiaForm extends React.Component {
                                               ? {
                                                   id: option?.value,
                                                   AtributoId: atributo.value,
+                                                  nome: option?.value
                                                 }
                                               : c
                                           )
@@ -213,22 +215,6 @@ class TaxonomiaForm extends React.Component {
                             </tbody>
                           </Table>
                         </div>
-                        <Button
-                          className="form-control"
-                          variant="success"
-                          onClick={() =>
-                            setFieldValue("Caracteristicas", [
-                              ...values.Caracteristicas,
-                              {
-                                id: this.props.values.id ? null : undefined,
-                                nome: "",
-                                descricao: "",
-                              },
-                            ])
-                          }
-                        >
-                          Adicionar
-                        </Button>
                       </Tab>
                     </Tabs>
                     <FormGroup>

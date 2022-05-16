@@ -1,4 +1,5 @@
 import express, { query } from "express";
+import Foto from "../models/museu/Foto";
 import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
 import Taxonomia from "../models/museu/Taxonomia";
@@ -51,7 +52,7 @@ taxonomiaRouter.get("/taxonomia/:id", (req, res) => {
     include: [
       {
         model: Caracteristica,
-        attributes: ["id", "AtributoId"],
+        attributes: ["id", "nome", "AtributoId"],
         through: {
           attributes: [],
         },
@@ -113,7 +114,7 @@ taxonomiaRouter.delete("/taxonomia/:id", (req, res) => {
 });
 
 taxonomiaRouter.post("/taxonomia", (req, res) => {
-  Taxonomia.create(req.body)
+  Taxonomia.create(req.body, {include: Foto})
     .then((taxonomia) => {
       taxonomia
         .setCaracteristicas(
