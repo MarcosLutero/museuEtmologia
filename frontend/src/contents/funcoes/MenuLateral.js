@@ -46,7 +46,6 @@ class MenuLateral extends React.Component {
             </ListGroup.Item>
           </ListGroup>
         </Card.Body>
-        <Card.Footer></Card.Footer>
       </Card>
     );
   }

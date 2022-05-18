@@ -8,6 +8,7 @@ import {
   Form as BSForm,
   Button,
 } from "react-bootstrap";
+import "./css/index.scss";
 
 class DenominaçãoForm extends React.Component {
   static defaultProps = {

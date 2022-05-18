@@ -1,43 +1,21 @@
-*{
-  background:transparent;
-	font-size:100%;
-	margin:0;
-	outline:0;
-	padding:0;
-	vertical-align:baseline;
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-	border:0;
 }
 
 body {
-  /*position: fixed;*/
-  background-image: url("../img/fundo.jpg");
-  height: 100vh;
-  width: 100vw;
-
+  background-image: linear-gradient(to right, #008b8b,#008b8b);
+  color: #29292e;
 }
 
-section .layout {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-  color: rgb(0, 0, 0);
-
+body,
+input,
+button,
+textarea {
+  font: 400 16px "Roboto", sans-serif;
 }
 
-.teste{
-  color: white;
+p{
+  color: #fff;
 }
-
-.total{
-  width: 100vw;
-}
-.button-out{
-  margin-left: -9rem;
-}
-
-.divstyle{
-  overflow-y: scroll;
-  width: 480px;
-  float: left;
-  height: 400px;
-  position: relative;
-};

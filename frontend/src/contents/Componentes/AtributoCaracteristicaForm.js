@@ -2,7 +2,7 @@ import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import "../App.css";
+import "./css/index.scss";
 import React from "react";
 import {
   FormGroup,
@@ -13,7 +13,6 @@ import {
   Table,
 } from "react-bootstrap";
 import Select from "react-select";
-import * as Icons from "@fortawesome/free-solid-svg-icons";
 class AtributoCaracteristicaForm extends React.Component {
   static defaultProps = {
     values: {},

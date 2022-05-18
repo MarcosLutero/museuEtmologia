@@ -24,6 +24,7 @@
     "react-scripts": "5.0.0",
     "react-select": "^5.3.0",
     "redux": "^4.1.2",
+    "sass": "^1.51.0",
     "superagent": "^7.1.2",
     "web-vitals": "^2.1.4"
   },

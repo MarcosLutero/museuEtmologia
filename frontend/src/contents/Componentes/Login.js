@@ -1,21 +1,10 @@
-import {
-  faClock,
-  faKey,
-  faSignInAlt,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import {
-  Button,
-  Card,
-  Col,
-  Form,
   FormControl,
-  InputGroup,
-  Row,
 } from "react-bootstrap";
 import axios from "axios";
+import "./css/index.scss";
+import Fundo1 from "../../img/Fundo1.jpg";
 
 class Login extends React.Component {
   state = {
@@ -25,7 +14,6 @@ class Login extends React.Component {
     token: null,
   };
 
-
   login_user(event) {
     this.setState(() => ({ login: event.target.value }));
   }
@@ -33,7 +21,6 @@ class Login extends React.Component {
     this.setState(() => ({ senha: event.target.value }));
   }
 
-  
   login = (event) => {
     event.preventDefault();
     axios
@@ -44,7 +31,6 @@ class Login extends React.Component {
       .then((res) => {
         this.props.setUsuario(res.data);
         localStorage.setItem("usuario", JSON.stringify(res.data));
-
       })
       .catch((err) => {
         var titulo, conteudo;
@@ -69,77 +55,45 @@ class Login extends React.Component {
   };
   render() {
     return (
-
-        <Col lg={{ span: 4, offset: 4 }}>
-          <Card>
-            <Card.Header>
-              <Card.Title as="span">Acesso ao Sistema</Card.Title>
-            </Card.Header>
-            <Card.Body>
-              <form onSubmit={(event) => this.login(event)}>
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Label>Usuário</Form.Label>
-                    <InputGroup className="mb-3">
-                      <InputGroup.Text id="inputGroup-sizing-sm">
-                        <FontAwesomeIcon icon={faUser} />
-                      </InputGroup.Text>
-                      <FormControl
-                        type="text"
-                        name="login"
-                        required
-                        placeholder="Usuário"
-                        onChange={this.login_user.bind(this)}
-                      />
-                    </InputGroup>
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Label>Senha</Form.Label>
-                    <InputGroup className="mb-3">
-                      <InputGroup.Text id="inputGroup-sizing-sm">
-                        <FontAwesomeIcon icon={faKey} />
-                      </InputGroup.Text>
-                      <FormControl
-                        type="password"
-                        name="senha"
-                        required
-                        placeholder="Senha"
-                        onChange={this.senha_user.bind(this)}
-                      />
-                    </InputGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Button
-                      variant="primary"
-                      className="form-control"
-                      type="submit"
-                      disabled={this.state.loading}
-                    >
-                      {this.state.loading ? (
-                        <FontAwesomeIcon icon={faClock} />
-                      ) : (
-                        <FontAwesomeIcon icon={faSignInAlt} />
-                      )}
-                      Entrar
-                    </Button>
-                  </Col>
-                </Row>
-              </form>
-            </Card.Body>
-            <Card.Footer>
-              <Row className="justify-content-md-center">
-                <Col md="auto">
-                  UFRA - UNIVERSIDADE FEDERAL RURAL DA AMAZÔNIA
-                </Col>
-              </Row>
-            </Card.Footer>
-          </Card>
-        </Col>
-
+      <>
+        <div id="page-auth">
+          <div className="lado_esquerdo">
+            <img className="img_login" src={Fundo1} alt="First slide" />
+          </div>
+          <main>
+            <div className="main-content">
+              <div className="formulario">
+                <h3 className="titulo_form">Login no Sistema</h3>
+                <form onSubmit={(event) => this.login(event)}>
+                  <FormControl
+                    className="input"
+                    type="text"
+                    name="login"
+                    required
+                    placeholder="Usuário"
+                    onChange={this.login_user.bind(this)}
+                  />
+                  <FormControl
+                    className="input"
+                    type="password"
+                    name="senha"
+                    required
+                    placeholder="Senha"
+                    onChange={this.senha_user.bind(this)}
+                  />
+                  <button
+                    className="botao_submit"
+                    type="submit"
+                    disabled={this.state.loading}
+                  >
+                    Login
+                  </button>
+                </form>
+              </div>
+            </div>
+          </main>
+        </div>
+      </>
     );
   }
 }

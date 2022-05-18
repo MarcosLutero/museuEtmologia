@@ -1,50 +1,24 @@
-import { faBug } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { Card, Col, Form, FormControl, InputGroup, Row } from "react-bootstrap";
-
+import { FormControl } from "react-bootstrap";
+import "./css/index.scss";
 
 class PaginaInicial extends React.Component {
   render() {
-    return ( 
-          
-            <Col lg={{ span: 6, offset: 3 }}>
-            <Card className="mt-4">
-              <Card.Header>
-                <Card.Title as="span">Pesquise</Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <form>
-                  <Row className="mb-3">
-                    <Col>
-                      <Form.Label>Inseto</Form.Label>
-                      <InputGroup className="mb-3">
-                        <InputGroup.Text id="inputGroup-sizing-sm">
-                          <FontAwesomeIcon icon={faBug} />
-                        </InputGroup.Text>
-                        <FormControl
-                          type="text"
-                          name="inseto"
-                          required
-                          placeholder="Nome do Inseto"
-                        />
-                      </InputGroup>
-                    </Col>
-                  </Row>
-                </form>
-              </Card.Body>
-              <Card.Footer>
-                <Row className="justify-content-md-center">
-                  <Col md="auto">
-                    UFRA - UNIVERSIDADE FEDERAL RURAL DA AMAZÔNIA
-                  </Col>
-                </Row>
-              </Card.Footer>
-            </Card>
-            </Col>
-
-     
-      
+    return (
+      <>
+        <div className="paginaInicial">
+          <div className="pesquisar">
+            <form>
+              <FormControl
+                type="text"
+                name="inseto"
+                required
+                placeholder="Nome do Inseto"
+              />
+            </form>
+          </div>
+        </div>
+      </>
     );
   }
 }

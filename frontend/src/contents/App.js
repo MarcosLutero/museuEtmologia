@@ -20,8 +20,8 @@ class App extends React.Component {
   render() {
     const Pagina = this.state.Pagina;
     return (
-      <section>
-        <div className="img"/>
+      <>
+        <div className="img" />
         <div className="layout">
           <BrowserRouter>
             <MenuTop
@@ -76,8 +76,7 @@ class App extends React.Component {
             </Routes>
           </BrowserRouter>
         </div>
-
-      </section>
+      </>
     );
   }
 }
