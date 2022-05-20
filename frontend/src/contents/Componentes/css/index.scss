@@ -1,21 +1,57 @@
 .paginaInicial {
-  height: 93.5vh;
-  background-image: url("../../../img/Fundo2.jpg");
-  background-position: center;
-  background-size:70% 100%, contain;
+  background-image: url("../../../video/Fundo.gif");
+  background-size: 100%;
   background-repeat: no-repeat;
-}
-.pesquisar {
-  position: absolute;
-  top: -300px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
-  width: 800px;
-  height: 40px;
-  margin: auto;
+  height: 93.5vh;
+
+  .container {
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(13.5px);
+    -webkit-backdrop-filter: blur(13.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    height: 40%;
+
+    .pesquisar {
+      margin: 100px 25% 1em;
+      width: 50%;
+      border-radius: 25px;
+      padding: 0px 20px 0px 10px;
+      font-size: 25px;
+      zoom: 1;
+      filter: alpha(opacity=50);
+      opacity: 0.5;
+      border: none;
+    }
+    .pesquisar:hover {
+      box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .aranha,
+  .borboleta,
+  .formiga {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+  }
+
+  .frase {
+    color: #000000;
+    font-size: 20px;
+    font-family: "Shadows Into Light", "Roboto", "Poppins", sans-serif;
+    text-align: justify;
+    padding: 20px;
+  }
 }
 
+//login
 #page-auth {
   display: flex;
   align-items: stretch;
@@ -24,10 +60,18 @@
   .lado_esquerdo {
     flex: 8;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     background-color: darkcyan;
     align-items: center;
     padding: 10px;
+
+    .boasvindas {
+      font-size: 50px;
+      text-align: center;
+      color: #fff;
+      font-family: "Shadows Into Light", "Roboto", "Poppins", sans-serif;
+    }
 
     .img_login {
       object-fit: cover;
@@ -59,17 +103,16 @@
       font-size: 50px;
       margin-bottom: 30px;
       color: #fff;
-      font-family: 'Shadows Into Light', 'Roboto', 'Poppins', sans-serif;
+      font-family: "Shadows Into Light", "Roboto", "Poppins", sans-serif;
     }
 
     .input {
-      font-family: 'Shadows Into Light';
+      font-family: "Shadows Into Light";
       border-radius: 25px;
       margin-bottom: 10px;
       width: 100%;
       height: 50px;
       margin-top: 10px;
-      border-radius: 25px;
       margin-bottom: 10px;
     }
   }
@@ -80,7 +123,7 @@
   }
 
   .botao_submit {
-    font-family: 'Shadows Into Light';
+    font-family: "Shadows Into Light";
     background: #57b846;
     text-transform: uppercase;
     font-size: 30px;
@@ -91,13 +134,12 @@
     height: 50px;
     border-radius: 25px;
     padding: 0 25px;
-    transition: all .4s;
+    transition: all 0.4s;
     border: none;
   }
-
-
 }
 
+//scroll tabelas
 .divstyle {
   overflow-y: scroll;
   width: 480px;

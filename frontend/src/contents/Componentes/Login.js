@@ -4,7 +4,7 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import "./css/index.scss";
-import Fundo1 from "../../img/Fundo1.jpg";
+import Fundo1 from "../../video/Fundo1.gif";
 
 class Login extends React.Component {
   state = {
@@ -58,6 +58,7 @@ class Login extends React.Component {
       <>
         <div id="page-auth">
           <div className="lado_esquerdo">
+           <h3 className="boasvindas">Bem Vindo Ao Museu da UFRA</h3>
             <img className="img_login" src={Fundo1} alt="First slide" />
           </div>
           <main>
