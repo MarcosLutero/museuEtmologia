@@ -4,6 +4,14 @@ import Caracteristica from "../models/museu/Caracteristica";
 import sequelize from "../database/museu";
 
 const atributoRouter = express.Router();
+atributoRouter.get("/respostaAtributoCaracteristica/", (req, res) => {
+  Atributo.findAll({
+    include: [{ model: Caracteristica}]
+  }).then((atributo) => {
+    res.send(atributo);
+  })
+});
+
 atributoRouter.get("/atributoCaracteristica/", (req, res) => {
   Atributo.findAll({
     include: [{ model: Caracteristica}],

@@ -7,6 +7,7 @@ import MenuTop from "./funcoes/MenuTop.js";
 import "./App.css";
 import { Col, Row } from "react-bootstrap";
 import MenuLateral from "./funcoes/MenuLateral.js";
+import ResultadoPage from "./Componentes/ResultadoPage.js";
 
 class App extends React.Component {
   state = {
@@ -39,7 +40,20 @@ class App extends React.Component {
             />
 
             <Routes>
-              <Route path="/" element={<PaginaInicial />} />
+              <Route
+                path="/"
+                element={
+                  <PaginaInicial
+                    setPagina={(Pagina) => {
+                      this.setState(() => ({ Pagina }));
+                    }}
+                  />
+                }
+              />
+              <Route
+                path="/pesquisa"
+                element={<ResultadoPage/>}
+              />
               <Route
                 path="/admin"
                 element={
@@ -55,8 +69,9 @@ class App extends React.Component {
                       <Col md="9">
                         <Pagina
                           setPagina={(Pagina) => {
-                            this.setState({ Pagina });
+                            this.setState(state => ({ Pagina }));
                           }}
+
                           setUsuario={(usuario) => {
                             this.setState({ usuario });
                           }}

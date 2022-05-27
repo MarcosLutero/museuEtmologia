@@ -6,6 +6,19 @@ import Taxonomia from "../models/museu/Taxonomia";
 
 const taxonomiaRouter = express.Router();
 
+taxonomiaRouter.get("/respostaTaxonomia/", (req, res) => {
+  Taxonomia.findAll({
+    include: [
+      { model: Taxonomia, as: "Pai" },
+      { model: Denominacao, attributes: ["nome"] },
+    ],
+  }).then((taxonomia) => {
+    {
+      res.send(taxonomia);
+    }
+  });
+});
+
 taxonomiaRouter.get("/taxonomia/", (req, res) => {
   Taxonomia.findAll({
     include: [

@@ -10,7 +10,8 @@ const authenticate = () => jwt({
 .unless({
     path: [
         /^\/usuario\/login/,
-
+        /^\/respostaAtributoCaracteristica\/?$/,
+        /^\/respostaTaxonomia\/?$/
     ]
 });
 

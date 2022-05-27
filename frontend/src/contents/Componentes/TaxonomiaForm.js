@@ -1,4 +1,4 @@
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -10,6 +10,7 @@ import {
   Tab,
   Tabs,
   Table,
+  Card,
 } from "react-bootstrap";
 import Select from "react-select";
 import "./css/index.scss";
@@ -170,7 +171,42 @@ class TaxonomiaForm extends React.Component {
                             }
                           />
                         </FormGroup>
-                        adcionar foto
+                        <Card className="mt-3">
+                          <Card.Body
+                            title={
+                              <div title="Anexos">
+                                <FontAwesomeIcon icon={faFile} />
+                                <span className="d-none d-lg-inline">
+                                  Anexos
+                                </span>
+                              </div>
+                            }
+                          >
+                            <Table
+                              striped
+                              size="sm"
+                              responsive
+                              className="my-2"
+                            >
+                              <thead className="bg-light">
+                                <tr>
+                                  <th style={{ width: 200 }}>Imagem</th>
+                                  <th>Nome</th>
+                                  <th style={{ minWidth: "1%" }}>Data</th>
+                                  <th style={{ width: 120 }}>Tamanho</th>
+                                  <th
+                                    style={{ width: 120, textAlign: "center" }}
+                                  >
+                                    Ações
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                
+                              </tbody>
+                            </Table>
+                          </Card.Body>
+                        </Card>
                       </Tab>
                       <Tab eventKey="caracteristicas" title="Características">
                         <legend>Caracteristicas Cadastradas</legend>
@@ -203,7 +239,7 @@ class TaxonomiaForm extends React.Component {
                                               ? {
                                                   id: option?.value,
                                                   AtributoId: atributo.value,
-                                                  nome: option?.value
+                                                  nome: option?.value,
                                                 }
                                               : c
                                           )
