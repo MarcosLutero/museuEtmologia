@@ -31,7 +31,7 @@ class PaginaInicial extends React.Component {
   submit = (event) => {
     event.preventDefault();
     if (this.state.tipo)
-     window.open("/pesquisa", this.state.resultados)
+     window.open("/pesquisa", this.props.resultados)
       
   };
 

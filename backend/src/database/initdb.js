@@ -2,7 +2,8 @@ import MuseuSchema from "./museu";
 import Atributo from "../models/museu/Atributo";
 import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
-import Foto from "../models/museu/Foto";
+import FotoTaxonomia from "../models/museu/FotoTaxonomia";
+import FotoCaracteristica from "../models/museu/FotoCaracteristica";
 import Taxonomia from "../models/museu/Taxonomia";
 import CaracteristicaTaxonomia from "../models/museu/CaracteristicaTaxonomia";
 
@@ -41,13 +42,27 @@ const initdb = () =>
     });
 
     
-    Taxonomia.hasMany(Foto, {
+    Taxonomia.hasMany(FotoTaxonomia, {
       onDelete: "CASCADE",
       foreignKey: {
         allowNull: false,
       },
     });
-    Foto.belongsTo(Taxonomia, {
+    FotoTaxonomia.belongsTo(Taxonomia, {
+      onDelete: "RESTRICT",
+      foreignKey: {
+        allowNull: false,
+      },
+    });
+
+       
+    Caracteristica.hasMany(FotoCaracteristica, {
+      onDelete: "CASCADE",
+      foreignKey: {
+        allowNull: false,
+      },
+    });
+    FotoCaracteristica.belongsTo(Caracteristica, {
       onDelete: "RESTRICT",
       foreignKey: {
         allowNull: false,

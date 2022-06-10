@@ -1,10 +1,20 @@
 import React from "react";
 import {
+  Button,
+  Col,
+  Container,
+  Form,
   FormControl,
+  Image,
+  Row,
 } from "react-bootstrap";
 import axios from "axios";
 import "./css/index.scss";
 import Fundo1 from "../../video/Fundo1.gif";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowCircleRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 class Login extends React.Component {
   state = {
@@ -56,44 +66,54 @@ class Login extends React.Component {
   render() {
     return (
       <>
-        <div id="page-auth">
-          <div className="lado_esquerdo">
-           <h3 className="boasvindas">Bem Vindo Ao Museu da UFRA</h3>
-            <img className="img_login" src={Fundo1} alt="First slide" />
-          </div>
-          <main>
-            <div className="main-content">
-              <div className="formulario">
-                <h3 className="titulo_form">Login no Sistema</h3>
-                <form onSubmit={(event) => this.login(event)}>
+        <Container fluid className="m-0 p-0" id="login">
+          <Row className="m-0 p-0 cor-fundo-verde">
+            <Col className="m-0 p-0" lg={6}>
+              <Image
+              fluid
+                src={Fundo1}
+                alt="First slide"
+              />
+            </Col>
+            <Col
+              className=" text-white  d-flex align-items-center justify-content-center text-center"
+              lg={{offset:1, span:4}}
+            >
+              <div className="borda-branca borda-redonda p-3 w-100 mt-5 mb-2">
+                <h1 className="titulo_form font-weight-bolder">
+                  Login no Sistema
+                </h1>
+                <Form onSubmit={(event) => this.login(event)} className="w-100">
                   <FormControl
-                    className="input"
                     type="text"
                     name="login"
+                    className="my-4"
                     required
                     placeholder="Usuário"
                     onChange={this.login_user.bind(this)}
                   />
                   <FormControl
-                    className="input"
                     type="password"
                     name="senha"
+                    className="my-4"
                     required
                     placeholder="Senha"
                     onChange={this.senha_user.bind(this)}
                   />
-                  <button
-                    className="botao_submit"
+                  <Button
+                    className="btn-lg my-4 w-100"
                     type="submit"
+                    variant="success"
                     disabled={this.state.loading}
                   >
+                    <FontAwesomeIcon icon={faArrowCircleRight} />
                     Login
-                  </button>
-                </form>
+                  </Button>
+                </Form>
               </div>
-            </div>
-          </main>
-        </div>
+            </Col>
+          </Row>
+        </Container>
       </>
     );
   }

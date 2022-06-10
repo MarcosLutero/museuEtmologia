@@ -117,98 +117,27 @@
   }
 }
 
+
 //login
-#page-auth {
-  display: flex;
-  height: 1043px;
 
-  .lado_esquerdo {
-    flex: 8;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: darkcyan;
-    align-items: center;
-    padding: 10px;
-
-    .boasvindas {
-      font-size: 50px;
-      text-align: center;
-      color: #fff;
-      font-family: "Shadows Into Light", "Roboto", "Poppins", sans-serif;
-    }
-
-    .img_login {
-      object-fit: cover;
-      width: 40rem;
-    }
-  }
-
-  main {
-    background-image: linear-gradient(to right, #008b8b, #40e0d0);
-    flex: 7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .main-content {
-    flex-direction: column;
-    width: 100%;
-    max-width: 600px;
-    text-align: center;
-  }
-
-  .formulario {
-    border: 1px solid;
-    padding: 40px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-
-    .titulo_form {
-      font-size: 50px;
-      margin-bottom: 30px;
-      color: #fff;
-      font-family: "Shadows Into Light", "Roboto", "Poppins", sans-serif;
-    }
-
-    .input {
-      font-family: "Shadows Into Light";
-      border-radius: 25px;
-      margin-bottom: 10px;
-      width: 100%;
-      height: 50px;
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-
-    .input:hover {
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-      transition: opacity 3s ease-in-out;
-    }
-  }
-
-  .botao_submit {
-    font-family: "Shadows Into Light";
-    background: #57b846;
-    text-transform: uppercase;
-    font-size: 30px;
-    color: #fff;
-    align-items: center;
-    justify-content: center;
-    width: 40%;
-    height: 50px;
-    border-radius: 25px;
-    padding: 0 25px;
-    transition: all 0.4s;
-    border: none;
-  }
-
-  .botao_submit:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    transition: opacity 3s ease-in-out;
-  }
+.cor-fundo-verde{
+  background-color:(#008a8a) ;
+}
+.borda-branca {
+  border: solid white 1px; 
 }
 
+.borda-redonda {
+  border-radius: 1rem;
+}
+
+.titulo_form{
+  font-family: "Shadows Into Light", "Roboto", "Poppins", sans-serif;
+}
+
+
+
+  
 //scroll tabelas
 .divstyle {
   overflow-y: scroll;

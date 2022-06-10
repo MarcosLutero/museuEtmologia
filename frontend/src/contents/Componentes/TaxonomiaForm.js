@@ -1,4 +1,10 @@
-import { faFile, faSave } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDownload,
+  faFile,
+  faPlus,
+  faSave,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -14,13 +20,15 @@ import {
 } from "react-bootstrap";
 import Select from "react-select";
 import "./css/index.scss";
+import fileSize from "filesize";
+import AddFotos from "../funcoes/AddFotos";
 
 class TaxonomiaForm extends React.Component {
+  uploadRef = React.createRef();
   state = {
     taxonomias: [],
     denominacaos: [],
     atributos: [],
-    loaded: false,
   };
 
   componentDidMount() {
@@ -99,6 +107,7 @@ class TaxonomiaForm extends React.Component {
                 this.props.values.Caracteristicas?.sort((a, b) =>
                   a.nome.localeCompare(b.nome)
                 ) ?? [],
+              Fotos: this.props.values.Fotos ?? [],
             }}
             validate={(values) => {
               const errors = {};
@@ -115,7 +124,6 @@ class TaxonomiaForm extends React.Component {
             {({ isSubmitting, values, setFieldValue }) => {
               return (
                 <>
-                  {console.log(values.Caracteristicas)}
                   <Form>
                     <Tabs defaultActiveKey="detalhes">
                       <Tab eventKey="detalhes" title="Detalhes">
@@ -174,10 +182,10 @@ class TaxonomiaForm extends React.Component {
                         <Card className="mt-3">
                           <Card.Body
                             title={
-                              <div title="Anexos">
+                              <div title="Fotos">
                                 <FontAwesomeIcon icon={faFile} />
                                 <span className="d-none d-lg-inline">
-                                  Anexos
+                                  Fotos
                                 </span>
                               </div>
                             }
@@ -190,10 +198,7 @@ class TaxonomiaForm extends React.Component {
                             >
                               <thead className="bg-light">
                                 <tr>
-                                  <th style={{ width: 200 }}>Imagem</th>
                                   <th>Nome</th>
-                                  <th style={{ minWidth: "1%" }}>Data</th>
-                                  <th style={{ width: 120 }}>Tamanho</th>
                                   <th
                                     style={{ width: 120, textAlign: "center" }}
                                   >
@@ -202,8 +207,68 @@ class TaxonomiaForm extends React.Component {
                                 </tr>
                               </thead>
                               <tbody>
-                                
+                                {values.Fotos.filter(
+                                  (foto) => !foto.deleted
+                                ).map((foto, key) => (
+                                  <tr key={key}>
+                                    <td>{foto.nome}</td>
+                                    <td className="text-center">
+                                      {foto.id ? (
+                                        <Button
+                                          as="a"
+                                          download={foto.nome}
+                                          size="sm"
+                                          href={setFieldValue("Fotos")}
+                                          variant="info"
+                                          title="Download"
+                                          className="mr-2"
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={faDownload}
+                                          ></FontAwesomeIcon>
+                                        </Button>
+                                      ) : null}
+                                      <Button
+                                        size="sm"
+                                        type="button"
+                                        variant="danger"
+                                        title="Excluir"
+                                        onClick={() =>
+                                          window.confirm(
+                                            "Deseja realmente excluir este arquivo?"
+                                          ) && setFieldValue("Fotos", values.Fotos)
+                                        }
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faTrash}
+                                        ></FontAwesomeIcon>
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                ))}
                               </tbody>
+                              <tfoot>
+                                <tr>
+                                  <td colSpan={4}>
+                                    {values.Fotos.length === 0 ? (
+                                      <AddFotos
+                                        onError={(file) =>
+                                          window.console.error(
+                                            "Falha ao carregar o arquivo " +
+                                              file.name
+                                          )
+                                        }
+                                        onLoad={(fotos) =>
+                                          setFieldValue("Fotos", [
+                                            ...values.Fotos,
+                                            ...fotos,
+                                          ])
+                                        }
+                                      />
+                                    ) : null}
+                                  </td>
+                                </tr>
+                              </tfoot>
                             </Table>
                           </Card.Body>
                         </Card>

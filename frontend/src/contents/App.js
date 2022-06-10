@@ -5,7 +5,7 @@ import PaginaInicial from "./Componentes/PaginaInicial.js";
 import TaxonomiaList from "./Componentes/TaxonomiaList";
 import MenuTop from "./funcoes/MenuTop.js";
 import "./App.css";
-import { Col, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import MenuLateral from "./funcoes/MenuLateral.js";
 import ResultadoPage from "./Componentes/ResultadoPage.js";
 
@@ -25,22 +25,25 @@ class App extends React.Component {
         <div className="img" />
         <div className="layout">
           <BrowserRouter>
-            <MenuTop
-              usuario={this.state.usuario}
-              logout={() => {
-                this.setState(
-                  {
-                    usuario: { login: null, nome: null, token: null },
-                  },
-                  () => {
-                    localStorage.setItem("usuario", JSON.stringify({}));
-                  }
-                );
-              }}
-            />
+            <Container fluid={true}>
+              <MenuTop
+                usuario={this.state.usuario}
+                logout={() => {
+                  this.setState(
+                    {
+                      usuario: { login: null, nome: null, token: null },
+                    },
+                    () => {
+                      localStorage.setItem("usuario", JSON.stringify({}));
+                    }
+                  );
+                }}
+              />
+            </Container>
 
             <Routes>
               <Route
+                exact
                 path="/"
                 element={
                   <PaginaInicial
@@ -50,10 +53,7 @@ class App extends React.Component {
                   />
                 }
               />
-              <Route
-                path="/pesquisa"
-                element={<ResultadoPage/>}
-              />
+              <Route path="/pesquisa" element={<ResultadoPage />} />
               <Route
                 path="/admin"
                 element={
@@ -69,9 +69,8 @@ class App extends React.Component {
                       <Col md="9">
                         <Pagina
                           setPagina={(Pagina) => {
-                            this.setState(state => ({ Pagina }));
+                            this.setState((state) => ({ Pagina }));
                           }}
-
                           setUsuario={(usuario) => {
                             this.setState({ usuario });
                           }}

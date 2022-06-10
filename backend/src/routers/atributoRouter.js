@@ -82,6 +82,7 @@ atributoRouter.post("/atributoCaracteristica", (req, res) => {
             AtributoId: atributo.id,
           })
         )
+        
       )
         .then(() => {
           res.send(atributo);
