@@ -107,7 +107,7 @@ class TaxonomiaForm extends React.Component {
                 this.props.values.Caracteristicas?.sort((a, b) =>
                   a.nome.localeCompare(b.nome)
                 ) ?? [],
-              Fotos: this.props.values.Fotos ?? [],
+              FotoTaxonomia: this.props.values.FotoTaxonomia ?? [],
             }}
             validate={(values) => {
               const errors = {};
@@ -122,6 +122,7 @@ class TaxonomiaForm extends React.Component {
             }}
           >
             {({ isSubmitting, values, setFieldValue }) => {
+              
               return (
                 <>
                   <Form>
@@ -207,7 +208,7 @@ class TaxonomiaForm extends React.Component {
                                 </tr>
                               </thead>
                               <tbody>
-                                {values.Fotos.filter(
+                                {values.FotoTaxonomia.filter(
                                   (foto) => !foto.deleted
                                 ).map((foto, key) => (
                                   <tr key={key}>
@@ -218,7 +219,7 @@ class TaxonomiaForm extends React.Component {
                                           as="a"
                                           download={foto.nome}
                                           size="sm"
-                                          href={setFieldValue("Fotos")}
+                                          href={setFieldValue("FotoTaxonomia")}
                                           variant="info"
                                           title="Download"
                                           className="mr-2"
@@ -236,7 +237,7 @@ class TaxonomiaForm extends React.Component {
                                         onClick={() =>
                                           window.confirm(
                                             "Deseja realmente excluir este arquivo?"
-                                          ) && setFieldValue("Fotos", values.Fotos)
+                                          ) && setFieldValue("Fotos", values.FotoTaxonomia)
                                         }
                                       >
                                         <FontAwesomeIcon
@@ -250,7 +251,7 @@ class TaxonomiaForm extends React.Component {
                               <tfoot>
                                 <tr>
                                   <td colSpan={4}>
-                                    {values.Fotos.length === 0 ? (
+                                    {values.FotoTaxonomia.length === 0 ? (
                                       <AddFotos
                                         onError={(file) =>
                                           window.console.error(
@@ -259,7 +260,7 @@ class TaxonomiaForm extends React.Component {
                                           )
                                         }
                                         onLoad={(fotos) =>
-                                          setFieldValue("Fotos", [
+                                          setFieldValue("FotoTaxonomia", [
                                             ...values.Fotos,
                                             ...fotos,
                                           ])
