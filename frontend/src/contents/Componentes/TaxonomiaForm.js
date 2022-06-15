@@ -77,6 +77,9 @@ class TaxonomiaForm extends React.Component {
   }
 
   save(values, callback) {
+
+    console.log(values)
+
     const method = this.props.values.id ? "put" : "post";
     const url =
       "http://localhost:8080/taxonomia" +
@@ -110,6 +113,7 @@ class TaxonomiaForm extends React.Component {
               FotoTaxonomia: this.props.values.FotoTaxonomia ?? [],
             }}
             validate={(values) => {
+              console.log(values)
               const errors = {};
               if (!values.nome) errors.nome = "Campo obrigatório";
               if (!values.DenominacaoId)
@@ -245,7 +249,7 @@ class TaxonomiaForm extends React.Component {
                                           window.confirm(
                                             "Deseja realmente excluir este arquivo?"
                                           ) &&
-                                          setFieldValue("FotoTaxonomia", [])
+                                          setFieldValue("FotoTaxonomia", values.FotoTaxonomia.filter(f => f !== foto))
                                         }
                                       >
                                         <FontAwesomeIcon
@@ -276,7 +280,6 @@ class TaxonomiaForm extends React.Component {
                       </Tab>
                       <Tab eventKey="caracteristicas" title="Características">
                         <legend>Caracteristicas Cadastradas</legend>
-
                         <Table striped>
                           <tbody>
                             {this.state.atributos.map((atributo, key) => (
@@ -294,19 +297,13 @@ class TaxonomiaForm extends React.Component {
                                         values.Caracteristicas.find(
                                           (c) => c.id === option.value
                                         )?.id
-                                    )}
+                                    ) ?? null}
                                     onChange={(option) =>
                                       setFieldValue(
                                         "Caracteristicas",
-                                        values.Caracteristicas.map((c) =>
-                                          c.AtributoId === atributo.value
-                                            ? {
-                                                id: option?.value,
-                                                AtributoId: atributo.value,
-                                                nome: option?.value,
-                                              }
-                                            : c
-                                        )
+                                        option?
+                                        [...values.Caracteristicas.filter(c => c.AtributoId !== atributo.value),  {id: option.value, nome: option.label, AtributoId: atributo.id}]:
+                                        [...values.Caracteristicas.filter(c => c.AtributoId !== atributo.value)]
                                       )
                                     }
                                   />

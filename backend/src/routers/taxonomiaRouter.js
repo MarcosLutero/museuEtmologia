@@ -72,7 +72,8 @@ taxonomiaRouter.get("/taxonomia/:id", (req, res) => {
       },
       {
         model: FotoTaxonomia,
-        attributes: ["id", "nome", "conteudo"],
+        attributes: ["id", "nome", "conteudo"]
+        
       },
     ],
   })
