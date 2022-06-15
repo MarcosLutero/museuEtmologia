@@ -15,7 +15,7 @@ const FotoCaracteristica = sequelize.define(
   },
   {
     paranoid: true,
-    tableName: "foto_caracteristica",
+    tableName: "fotoCaracteristica",
     underscored: true,
     freezeTableName: true,
     schema: "museu",

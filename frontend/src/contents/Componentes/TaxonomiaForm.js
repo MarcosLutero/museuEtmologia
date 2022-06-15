@@ -20,7 +20,6 @@ import {
 } from "react-bootstrap";
 import Select from "react-select";
 import "./css/index.scss";
-import fileSize from "filesize";
 import AddFotos from "../funcoes/AddFotos";
 
 class TaxonomiaForm extends React.Component {
@@ -29,6 +28,7 @@ class TaxonomiaForm extends React.Component {
     taxonomias: [],
     denominacaos: [],
     atributos: [],
+    loaded: false
   };
 
   componentDidMount() {
@@ -122,7 +122,6 @@ class TaxonomiaForm extends React.Component {
             }}
           >
             {({ isSubmitting, values, setFieldValue }) => {
-              
               return (
                 <>
                   <Form>
@@ -199,6 +198,7 @@ class TaxonomiaForm extends React.Component {
                             >
                               <thead className="bg-light">
                                 <tr>
+                                  <th style={{ width: 200 }}>Imagem</th>
                                   <th>Nome</th>
                                   <th
                                     style={{ width: 120, textAlign: "center" }}
@@ -212,6 +212,13 @@ class TaxonomiaForm extends React.Component {
                                   (foto) => !foto.deleted
                                 ).map((foto, key) => (
                                   <tr key={key}>
+                                    <td>
+                                      <img
+                                        alt="Imagem"
+                                        style={{ width: 200 }}
+                                        src={foto.conteudo}
+                                      />
+                                    </td>
                                     <td>{foto.nome}</td>
                                     <td className="text-center">
                                       {foto.id ? (
@@ -237,7 +244,8 @@ class TaxonomiaForm extends React.Component {
                                         onClick={() =>
                                           window.confirm(
                                             "Deseja realmente excluir este arquivo?"
-                                          ) && setFieldValue("Fotos", values.FotoTaxonomia)
+                                          ) &&
+                                          setFieldValue("FotoTaxonomia", [])
                                         }
                                       >
                                         <FontAwesomeIcon
@@ -248,76 +256,65 @@ class TaxonomiaForm extends React.Component {
                                   </tr>
                                 ))}
                               </tbody>
-                              <tfoot>
-                                <tr>
-                                  <td colSpan={4}>
-                                    {values.FotoTaxonomia.length === 0 ? (
-                                      <AddFotos
-                                        onError={(file) =>
-                                          window.console.error(
-                                            "Falha ao carregar o arquivo " +
-                                              file.name
-                                          )
-                                        }
-                                        onLoad={(fotos) =>
-                                          setFieldValue("FotoTaxonomia", [
-                                            ...values.Fotos,
-                                            ...fotos,
-                                          ])
-                                        }
-                                      />
-                                    ) : null}
-                                  </td>
-                                </tr>
-                              </tfoot>
                             </Table>
+                            {values.FotoTaxonomia.length === 0 ? (
+                              <AddFotos
+                                multiple={true}
+                                asDataURL={true}
+                                onError={(file) =>
+                                  window.console.error(
+                                    "Falha ao carregar o arquivo " + file.name
+                                  )
+                                }
+                                onLoad={(fotos) =>
+                                  setFieldValue("FotoTaxonomia", fotos)
+                                }
+                              />
+                            ) : null}
                           </Card.Body>
                         </Card>
                       </Tab>
                       <Tab eventKey="caracteristicas" title="Características">
                         <legend>Caracteristicas Cadastradas</legend>
-                        <div className="divstyle">
-                          <Table striped>
-                            <tbody>
-                              {this.state.atributos.map((atributo, key) => (
-                                <tr key={key}>
-                                  <td>{atributo.label}</td>
-                                  <td>
-                                    <Select
-                                      isClearable={true}
-                                      noOptionsMessage={() =>
-                                        "Nada encontrado."
-                                      }
-                                      placeholder="Pesquisar..."
-                                      options={atributo.Caracteristicas}
-                                      value={atributo.Caracteristicas.find(
-                                        (option) =>
-                                          option.value ===
-                                          values.Caracteristicas.find(
-                                            (c) => c.id === option.value
-                                          )?.id
-                                      )}
-                                      onChange={(option) =>
-                                        setFieldValue(
-                                          "Caracteristicas",
-                                          values.Caracteristicas.map((c) =>
-                                            c.AtributoId === atributo.value
-                                              ? {
-                                                  id: option?.value,
-                                                  AtributoId: atributo.value,
-                                                  nome: option?.value,
-                                                }
-                                              : c
-                                          )
+
+                        <Table striped>
+                          <tbody>
+                            {this.state.atributos.map((atributo, key) => (
+                              <tr key={key}>
+                                <td>{atributo.label}</td>
+                                <td>
+                                  <Select
+                                    isClearable={true}
+                                    noOptionsMessage={() => "Nada encontrado."}
+                                    placeholder="Pesquisar..."
+                                    options={atributo.Caracteristicas}
+                                    value={atributo.Caracteristicas.find(
+                                      (option) =>
+                                        option.value ===
+                                        values.Caracteristicas.find(
+                                          (c) => c.id === option.value
+                                        )?.id
+                                    )}
+                                    onChange={(option) =>
+                                      setFieldValue(
+                                        "Caracteristicas",
+                                        values.Caracteristicas.map((c) =>
+                                          c.AtributoId === atributo.value
+                                            ? {
+                                                id: option?.value,
+                                                AtributoId: atributo.value,
+                                                nome: option?.value,
+                                              }
+                                            : c
                                         )
-                                      }
-                                    />
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </Table>
-                        </div>
+                                      )
+                                    }
+                                  />
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
                       </Tab>
                     </Tabs>
                     <FormGroup>
