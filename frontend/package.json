@@ -16,6 +16,7 @@
     "express-jwt": "^6.1.0",
     "filesize": "^9.0.1",
     "formik": "^2.2.9",
+    "js-base64": "^3.7.2",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
     "react": "^18.0.0",

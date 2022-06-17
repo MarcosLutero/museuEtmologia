@@ -4,7 +4,7 @@ import Login from "./Componentes/Login.js";
 import PaginaInicial from "./Componentes/PaginaInicial.js";
 import TaxonomiaList from "./Componentes/TaxonomiaList";
 import MenuTop from "./funcoes/MenuTop.js";
-import "./App.css";
+import "./App.scss";
 import { Col, Container, Row } from "react-bootstrap";
 import MenuLateral from "./funcoes/MenuLateral.js";
 import ResultadoPage from "./Componentes/ResultadoPage.js";
@@ -21,11 +21,9 @@ class App extends React.Component {
   render() {
     const Pagina = this.state.Pagina;
     return (
-      <>
-        <div className="img" />
-        <div className="layout">
+        <div className="m-0 p-0 cor-fundo-verde">
           <BrowserRouter>
-            <Container fluid={true}>
+            <Container className="m-0 p-0" fluid>
               <MenuTop
                 usuario={this.state.usuario}
                 logout={() => {
@@ -90,7 +88,6 @@ class App extends React.Component {
             </Routes>
           </BrowserRouter>
         </div>
-      </>
     );
   }
 }

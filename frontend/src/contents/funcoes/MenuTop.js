@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import LogoUfra from "../../img/LogoUfra.png";
+import "../App.scss"
 
 class MenuTop extends React.Component {
   render() {
@@ -14,7 +15,7 @@ class MenuTop extends React.Component {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto">
-              <p className="mt-3">
+              <p className="mt-3 letra-branca">
                 UFRA - UNIVERSIDADE FEDERAL RURAL DA AMAZÔNIA
               </p>
             </Nav>
