@@ -17,6 +17,7 @@ import {
   Tabs,
   Table,
   Card,
+  Image,
 } from "react-bootstrap";
 import Select from "react-select";
 import "./css/index.scss";
@@ -96,7 +97,7 @@ class TaxonomiaForm extends React.Component {
       .catch((err) => {
         console.log(err);
       })
-      .finnaly(() => callback());
+      .finally(callback);
   }
 
   render() {
@@ -110,7 +111,7 @@ class TaxonomiaForm extends React.Component {
                 this.props.values.Caracteristicas?.sort((a, b) =>
                   a.nome.localeCompare(b.nome)
                 ) ?? [],
-              FotoTaxonomia: this.props.values.FotoTaxonomia ?? [],
+              FotoTaxonomias: this.props.values.FotoTaxonomias ?? [],
             }}
             validate={(values) => {
               console.log(values)
@@ -212,12 +213,12 @@ class TaxonomiaForm extends React.Component {
                                 </tr>
                               </thead>
                               <tbody>
-                                {values.FotoTaxonomia.filter(
+                                {values.FotoTaxonomias.filter(
                                   (foto) => !foto.deleted
                                 ).map((foto, key) => (
                                   <tr key={key}>
                                     <td>
-                                      <img
+                                      <Image
                                         alt="Imagem"
                                         style={{ width: 200 }}
                                         src={foto.conteudo}
@@ -225,21 +226,6 @@ class TaxonomiaForm extends React.Component {
                                     </td>
                                     <td>{foto.nome}</td>
                                     <td className="text-center">
-                                      {foto.id ? (
-                                        <Button
-                                          as="a"
-                                          download={foto.nome}
-                                          size="sm"
-                                          href={setFieldValue("FotoTaxonomia")}
-                                          variant="info"
-                                          title="Download"
-                                          className="mr-2"
-                                        >
-                                          <FontAwesomeIcon
-                                            icon={faDownload}
-                                          ></FontAwesomeIcon>
-                                        </Button>
-                                      ) : null}
                                       <Button
                                         size="sm"
                                         type="button"
@@ -249,7 +235,7 @@ class TaxonomiaForm extends React.Component {
                                           window.confirm(
                                             "Deseja realmente excluir este arquivo?"
                                           ) &&
-                                          setFieldValue("FotoTaxonomia", values.FotoTaxonomia.filter(f => f !== foto))
+                                          setFieldValue("FotoTaxonomias", values.FotoTaxonomias.filter(f => f !== foto))
                                         }
                                       >
                                         <FontAwesomeIcon
@@ -261,7 +247,7 @@ class TaxonomiaForm extends React.Component {
                                 ))}
                               </tbody>
                             </Table>
-                            {values.FotoTaxonomia.length === 0 ? (
+                            {values.FotoTaxonomias.length === 0 ? (
                               <AddFotos
                                 multiple={true}
                                 asDataURL={true}
@@ -271,7 +257,7 @@ class TaxonomiaForm extends React.Component {
                                   )
                                 }
                                 onLoad={(fotos) =>
-                                  setFieldValue("FotoTaxonomia", fotos)
+                                  setFieldValue("FotoTaxonomias", fotos)
                                 }
                               />
                             ) : null}

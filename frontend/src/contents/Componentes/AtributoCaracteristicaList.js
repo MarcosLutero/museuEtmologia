@@ -8,7 +8,7 @@ class CaracteristicaList extends React.Component {
   render() {
     return (
       <>
-        <h3 className="teste mt-2">
+        <h3 className="letra-branca mt-2">
           <FontAwesomeIcon icon={faIndent} /> Lista de Características
         </h3>
         <hr />

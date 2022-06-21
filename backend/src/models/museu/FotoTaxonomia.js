@@ -16,6 +16,9 @@ const FotoTaxonomia = sequelize.define(
   {
     paranoid: true,
     tableName: "fotoTaxonomia",
+    name: {
+      plural: "FotoTaxonomias"
+    },
     underscored: true,
     freezeTableName: true,
     schema: "museu",

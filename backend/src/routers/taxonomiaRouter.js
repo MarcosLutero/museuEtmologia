@@ -1,4 +1,4 @@
-import express, { query } from "express";
+import express from "express";
 import FotoTaxonomia from "../models/museu/FotoTaxonomia";
 import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
@@ -26,9 +26,6 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
       { model: Denominacao, attributes: ["nome"] },
     ],
   }).then((taxonomia) => {
-    {
-      console.log(taxonomia);
-    }
     res.send({
       headers: ["Nome", "Pertence a", "Denominação"],
       rows: taxonomia.map((taxonomia) => ({
@@ -72,8 +69,7 @@ taxonomiaRouter.get("/taxonomia/:id", (req, res) => {
       },
       {
         model: FotoTaxonomia,
-        attributes: ["id", "nome", "conteudo"]
-        
+        attributes: ["id", "nome", "conteudo"],
       },
     ],
   })
@@ -89,30 +85,47 @@ taxonomiaRouter.get("/taxonomia/:id", (req, res) => {
 });
 
 taxonomiaRouter.put("/taxonomia/:id", (req, res) => {
-  Taxonomia.findByPk(req.params.id)
+  Taxonomia.findByPk(req.params.id, { include: FotoTaxonomia })
     .then(async (taxonomia) => {
       if (taxonomia) {
         const denominacao = await Denominacao.findByPk(req.body.DenominacaoId);
-        taxonomia.update(req.body).then((taxonomia) => {
-          if (taxonomia) {
-            taxonomia
-              .setCaracteristicas(
-                req.body.Caracteristicas.map((c) => c.id).filter(
-                  (c) => c || false
-                )
+
+        await taxonomia.setCaracteristicas(
+          req.body.Caracteristicas.map((c) => c.id).filter((c) => c || false)
+        );
+        await Promise.all([
+          ...taxonomia.FotoTaxonomias.map((fotoTaxonomiaAtual) => {
+            if (
+              !req.body.FotoTaxonomias.find(
+                (foto) => foto.id === fotoTaxonomiaAtual.id
               )
-              .then(() => res.send(taxonomia))
-              .catch((err) => {
-                console.log(err);
-                res.sendStatus(500);
+            ) {
+              return fotoTaxonomiaAtual.destroy();
+            } else {
+              return null;
+            }
+          }),
+          ...req.body.FotoTaxonomias.map((fotoTaxonomiaNova) => {
+            if (!fotoTaxonomiaNova.id) {
+              return FotoTaxonomia.create({
+                ...fotoTaxonomiaNova,
+                TaxonomiumId: taxonomia.id,
               });
-          } else {
-            res.sendStatus(500);
-          }
-        });
+            } else {
+              return null;
+            }
+          }),
+        ]);
+        await taxonomia.update(req.body);
+        res.send(taxonomia);
+      } else {
+        res.sendStatus(404);
       }
     })
-    .catch((err) => res.sendStatus(500));
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
 });
 
 taxonomiaRouter.delete("/taxonomia/:id", (req, res) => {
@@ -133,12 +146,16 @@ taxonomiaRouter.delete("/taxonomia/:id", (req, res) => {
 
 taxonomiaRouter.post("/taxonomia", async (req, res) => {
   Taxonomia.create(req.body, { include: { model: FotoTaxonomia } })
-    .then((taxonomia) => {
-      taxonomia
-        .setCaracteristicas(
-          req.body.Caracteristicas.map((c) => c.id).filter((c) => c || false)
+    .then(async (taxonomia) => {
+      await taxonomia.setCaracteristicas(
+        req.body.Caracteristicas.map((c) => c.id).filter((c) => c || false)
+      );
+      await Promise.all(
+        req.body.FotoTaxonomias.map((fotoTaxonomia) =>
+          FotoTaxonomia.create({ ...fotoTaxonomia, TaxonomiumId: taxonomia.id })
         )
-        .then(() => res.send(taxonomia));
+      );
+      res.send(taxonomia);
     })
     .catch((err) => {
       console.log(err);

@@ -23,7 +23,6 @@ class App extends React.Component {
     return (
         <div className="m-0 p-0 cor-fundo-verde">
           <BrowserRouter>
-            <Container className="m-0 p-0" fluid>
               <MenuTop
                 usuario={this.state.usuario}
                 logout={() => {
@@ -37,8 +36,6 @@ class App extends React.Component {
                   );
                 }}
               />
-            </Container>
-
             <Routes>
               <Route
                 exact

@@ -93,8 +93,8 @@ const initdb = () =>
     };
     //resolve();
     syncModels()
-      .then(() => resolve())
-      .catch((err) => reject(err));
+      .then(resolve)
+      .catch(reject);
   });
 
 export default initdb;

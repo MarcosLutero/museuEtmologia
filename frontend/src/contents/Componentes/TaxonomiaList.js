@@ -7,7 +7,7 @@ class TaxonomiaList extends React.Component {
   render() {
     return(
       <>
-        <h3 className="teste mt-2">
+        <h3 className="mt-2 letra-branca">
           <FontAwesomeIcon icon={faClipboardList} /> Lista de Taxonomias
         </h3>
         <hr />

@@ -22,8 +22,9 @@ class MenuTop extends React.Component {
             <Nav>
               {this.props.usuario.nome ?(
                 
-                <NavDropdown className="button-out" title={this.props.usuario.nome}>
+                <NavDropdown className="button-out letra-branca" title={this.props.usuario.nome}>
                   <NavDropdown.Item 
+                  className="letra-branca"
                     onClick={() => {
                       this.props.logout();
                     }}
