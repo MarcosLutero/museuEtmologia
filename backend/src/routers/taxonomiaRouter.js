@@ -15,13 +15,14 @@ taxonomiaRouter.get("/respostaTaxonomia/", (req, res) => {
         [Op.like]: `%${req.query.filter}%`,
       },
     },
+    attributes: ["nome"],
     include: [
-      { model: Taxonomia, as: "Pai" },
+      { model: Taxonomia, as: "Pai", attributes: ["nome"]},
       { model: Denominacao, attributes: ["nome"] },
-      { model: FotoTaxonomia, attributes: ["id", "nome", "conteudo"] },
+      { model: FotoTaxonomia, attributes: ["nome", "conteudo"] },
       {
         model: Caracteristica,
-        attributes: ["id", "nome", "AtributoId"],
+        attributes: ["nome"],
         through: {
           attributes: [],
         },

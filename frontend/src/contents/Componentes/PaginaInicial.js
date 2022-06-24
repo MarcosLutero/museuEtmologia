@@ -8,6 +8,7 @@ import {
   Col,
   Container,
   Form,
+  Image,
   InputGroup,
   Row,
 } from "react-bootstrap";
@@ -42,13 +43,37 @@ class PaginaInicial extends React.Component {
         {this.state.resultados ? (
           <>
             {this.state.tipo === "respostaTaxonomia" ? (
-              <Container>
+              <Container fluid className="text-white">
                 {console.log(this.state.resultados)}
+                {this.state.resultados.map((taxonomia, key) => (
+                  <>
+                 
+                  <div key={key} >
+                    Nome : {taxonomia.nome}
+                  </div>
+                 <div>Pertence á: {taxonomia.Pai?.nome}</div>
+                  <div>Denominação: {taxonomia.Denominacao?.nome}</div>
+
+                  <div> Caracteristica:</div>
+                  {taxonomia.Caracteristicas?.map((caracteristica, key)=> (
+                  <div key={key}>
+                    {caracteristica.nome}
+                  </div>                
+                  ))
+                  }
+                  {taxonomia.FotoTaxonomias.map((foto, key)=>(
+                    <div key={key}>
+                      {foto.nome}
+                      <Image
+                      src= {foto.conteudo}
+                      />
+                    </div>
+                  ))}
+                  </>
+                ))}
               </Container>
             ) : this.state.tipo === "respostaAtributoCaracteristica" ? (
-              <Container>
-                {console.log(this.state.resultados)}
-              </Container>
+              <Container>{console.log(this.state.resultados)}</Container>
             ) : null}
           </>
         ) : (
