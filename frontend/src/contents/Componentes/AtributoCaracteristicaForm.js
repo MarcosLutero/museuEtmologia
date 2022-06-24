@@ -1,4 +1,4 @@
-import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -11,8 +11,11 @@ import {
   Tabs,
   Tab,
   Table,
+  Card,
+  Image,
 } from "react-bootstrap";
 import Select from "react-select";
+import AddFotos from "../funcoes/AddFotos";
 class AtributoCaracteristicaForm extends React.Component {
   static defaultProps = {
     values: {},
@@ -58,6 +61,7 @@ class AtributoCaracteristicaForm extends React.Component {
             this.props.values.Caracteristicas?.sort((a, b) =>
               a.nome.localeCompare(b.nome)
             ) ?? [],
+            FotoCaracteristicas: this.props.values.FotoCaracteristicas ?? [],
         }}
         validate={(values) => {
           const errors = {};
@@ -70,6 +74,7 @@ class AtributoCaracteristicaForm extends React.Component {
         }}
       >
         {({ isSubmitting, values, setFieldValue }) => {
+          console.log(this.props.values)
           return (
             <>
               <Form>
@@ -129,7 +134,87 @@ class AtributoCaracteristicaForm extends React.Component {
                                   name={`Caracteristicas[${key}].descricao`}
                                   as="textarea"
                                 />
+                                 <Card className="mt-3">
+                                 <Card.Body
+                                 title={
+                                  <div title="Fotos">
+                                    <FontAwesomeIcon icon={faFile} />
+                                    <span className="d-none d-lg-inline">
+                                      Fotos
+                                    </span>
+                                  </div>
+                                }
+                                 >
+                                  <Table
+                              striped
+                              size="sm"
+                              responsive
+                              className="my-2"
+                            >
+                              <thead className="bg-light">
+                                <tr>
+                                  <th style={{ width: 200 }}>Imagem</th>
+                                  <th>Nome</th>
+                                  <th
+                                    style={{ width: 120, textAlign: "center" }}
+                                  >
+                                    Ações
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {values.FotoCaracteristicas.filter(
+                                  (foto) => !foto.deleted
+                                ).map((foto, key) => (
+                                  <tr key={key}>
+                                    <td>
+                                      <Image
+                                        alt="Imagem"
+                                        style={{ width: 200 }}
+                                        src={foto.conteudo}
+                                      />
+                                    </td>
+                                    <td>{foto.nome}</td>
+                                    <td className="text-center">
+                                      <Button
+                                        size="sm"
+                                        type="button"
+                                        variant="danger"
+                                        title="Excluir"
+                                        onClick={() =>
+                                          window.confirm(
+                                            "Deseja realmente excluir este arquivo?"
+                                          ) &&
+                                          setFieldValue("FotoCaracteristicas", values.FotoCaracteristicas.filter(f => f !== foto))
+                                        }
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faTrash}
+                                        ></FontAwesomeIcon>
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                              </Table>
+                              {values.FotoCaracteristicas.length === 0 ? (
+                              <AddFotos
+                                multiple={true}
+                                asDataURL={true}
+                                onError={(file) =>
+                                  window.console.error(
+                                    "Falha ao carregar o arquivo " + file.name
+                                  )
+                                }
+                                onLoad={(fotos) =>
+                                  setFieldValue("FotoCaracteristicas", fotos)
+                                }
+                              />
+                            ) : null}
+                                 </Card.Body>
+                                 </Card>
                               </td>
+                         
                               <td>
                                 <Button
                                   className="form-control"

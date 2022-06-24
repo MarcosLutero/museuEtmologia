@@ -5,7 +5,7 @@ class ResultadoPage extends React.Component {
     return (
       <div>
         <div>
-         teste   
+         {console.log(this.props.resultados)} 
         </div>
       </div>
     );

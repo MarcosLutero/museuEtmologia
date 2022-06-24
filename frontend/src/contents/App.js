@@ -48,7 +48,7 @@ class App extends React.Component {
                   />
                 }
               />
-              <Route path="/pesquisa" element={<ResultadoPage />} />
+              <Route path="/pesquisar" element={<ResultadoPage />} />
               <Route
                 path="/admin"
                 element={

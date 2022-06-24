@@ -2,15 +2,34 @@ import express from "express";
 import FotoTaxonomia from "../models/museu/FotoTaxonomia";
 import Caracteristica from "../models/museu/Caracteristica";
 import Denominacao from "../models/museu/Denominacao";
+import Atributo from "../models/museu/Atributo";
 import Taxonomia from "../models/museu/Taxonomia";
+import { Op } from "sequelize";
 
 const taxonomiaRouter = express.Router();
 
 taxonomiaRouter.get("/respostaTaxonomia/", (req, res) => {
   Taxonomia.findAll({
+    where: {
+      nome: {
+        [Op.like]: `%${req.query.filter}%`,
+      },
+    },
     include: [
       { model: Taxonomia, as: "Pai" },
       { model: Denominacao, attributes: ["nome"] },
+      { model: FotoTaxonomia, attributes: ["id", "nome", "conteudo"] },
+      {
+        model: Caracteristica,
+        attributes: ["id", "nome", "AtributoId"],
+        through: {
+          attributes: [],
+        },
+        include: {
+          model: Atributo,
+          attributes: ["nome", "identificacao"],
+        },
+      },
     ],
   }).then((taxonomia) => {
     {

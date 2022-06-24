@@ -1,21 +1,22 @@
 import express from "express";
 import Atributo from "../models/museu/Atributo";
 import Caracteristica from "../models/museu/Caracteristica";
+import FotoCaracteristica from "../models/museu/FotoCaracteristica";
 import sequelize from "../database/museu";
 
 const atributoRouter = express.Router();
 atributoRouter.get("/respostaAtributoCaracteristica/", (req, res) => {
   Atributo.findAll({
-    include: [{ model: Caracteristica}]
+    include: [{ model: Caracteristica }],
   }).then((atributo) => {
     res.send(atributo);
-  })
+  });
 });
 
 atributoRouter.get("/atributoCaracteristica/", (req, res) => {
   Atributo.findAll({
-    include: [{ model: Caracteristica}],
-    order: sequelize.literal("nome", "ASC")
+    include: [{ model: Caracteristica }],
+    order: sequelize.literal("nome", "ASC"),
   }).then((atributo) => {
     res.send({
       headers: ["Nome", "Identificação", "Nome da Caracteristica"],
@@ -40,13 +41,13 @@ atributoRouter.get("/atributoCaracteristica/options", (req, res) => {
       ["id", "value"],
       ["nome", "label"],
     ],
-    include:{
-      model:Caracteristica,
+    include: {
+      model: Caracteristica,
       attributes: [
         ["id", "value"],
         ["nome", "label"],
       ],
-    }
+    },
   })
     .then((options) => {
       res.send(options);
@@ -58,32 +59,42 @@ atributoRouter.get("/atributoCaracteristica/options", (req, res) => {
 
 atributoRouter.get("/atributoCaracteristica/:id", (req, res) => {
   Atributo.findByPk(req.params.id, {
-    include: {
-      model: Caracteristica,
-      atributes: ["nome", "descricao"],
-    },
+    include: [
+      {
+        model: Caracteristica,
+        atributes: ["nome", "descricao"],
+        include: {
+          model: FotoCaracteristica,
+          attributes: ["id", "nome", "conteudo"],
+         
+        },
+      },
+    ],
   })
     .then((atributo) => {
       if (atributo) res.send(atributo);
       else res.sendStatus(404);
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
       res.sendStatus(500);
     });
 });
 
 atributoRouter.post("/atributoCaracteristica", (req, res) => {
-  Atributo.create(req.body)
+  Atributo.create(req.body,{ include: { model: FotoCaracteristica }})
     .then((atributo) => {
-      Promise.all(
+      Promise.all([
         req.body.Caracteristicas.map((caracteristica) =>
           Caracteristica.create({
             ...caracteristica,
             AtributoId: atributo.id,
           })
-        )
-        
+        ),
+        req.body.FotoCaracteristica.map((fotoCaracteristica) =>
+        FotoCaracteristica.create({ ...fotoCaracteristica, TaxonomiumId: taxonomia.id })
       )
+        ])
         .then(() => {
           res.send(atributo);
         })
@@ -116,12 +127,17 @@ atributoRouter.put("/atributoCaracteristica/:id", (req, res) => {
             }),
             ...req.body.Caracteristicas.map((caracteristica) => {
               if (!caracteristica.id) {
-                return Caracteristica.create({
-                  ...caracteristica,
-                  AtributoId: atributo.id,
-                },{transaction});
+                return Caracteristica.create(
+                  {
+                    ...caracteristica,
+                    AtributoId: atributo.id,
+                  },
+                  { transaction }
+                );
               } else {
-                return Caracteristica.findByPk(caracteristica.id, {transaction}).then(c => c.update(caracteristica,{transaction}));
+                return Caracteristica.findByPk(caracteristica.id, {
+                  transaction,
+                }).then((c) => c.update(caracteristica, { transaction }));
               }
             }),
           ]);
