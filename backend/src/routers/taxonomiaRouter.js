@@ -22,7 +22,7 @@ taxonomiaRouter.get("/respostaTaxonomia/", (req, res) => {
       { model: FotoTaxonomia, attributes: ["nome", "conteudo"] },
       {
         model: Caracteristica,
-        attributes: ["nome"],
+        attributes: ["nome", "descricao"],
         through: {
           attributes: [],
         },

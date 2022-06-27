@@ -5,12 +5,13 @@ import {
   Button,
   Card,
   CardGroup,
+  Carousel,
   Col,
   Container,
   Form,
   Image,
-  InputGroup,
   Row,
+  Table,
 } from "react-bootstrap";
 import aranha from "../../img/aranha.jpg";
 import borboleta from "../../img/borboleta.jpeg";
@@ -43,33 +44,56 @@ class PaginaInicial extends React.Component {
         {this.state.resultados ? (
           <>
             {this.state.tipo === "respostaTaxonomia" ? (
-              <Container fluid className="text-white">
+              <Container style={{ backgroundColor: "white" }}>
                 {console.log(this.state.resultados)}
                 {this.state.resultados.map((taxonomia, key) => (
-                  <>
-                 
-                  <div key={key} >
-                    Nome : {taxonomia.nome}
-                  </div>
-                 <div>Pertence á: {taxonomia.Pai?.nome}</div>
-                  <div>Denominação: {taxonomia.Denominacao?.nome}</div>
-
-                  <div> Caracteristica:</div>
-                  {taxonomia.Caracteristicas?.map((caracteristica, key)=> (
-                  <div key={key}>
-                    {caracteristica.nome}
-                  </div>                
-                  ))
-                  }
-                  {taxonomia.FotoTaxonomias.map((foto, key)=>(
-                    <div key={key}>
-                      {foto.nome}
-                      <Image
-                      src= {foto.conteudo}
-                      />
-                    </div>
-                  ))}
-                  </>
+                  <Table striped key={key} bordered hover>
+                    <thead>
+                      <tr>
+                        <th colSpan="3">
+                          {taxonomia.FotoTaxonomias.map((foto, key) => (
+                            <Carousel key={key}>
+                              <Carousel.Item>
+                                <Image alt="foto" src={foto.conteudo} />
+                              </Carousel.Item>
+                            </Carousel>
+                          ))}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th colSpan="3" className="text-center text-uppercase">
+                          {taxonomia.nome}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th>Pertence a Taxonomia:</th>
+                        <th> Denominação</th>
+                        <th> Caracteristicas</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td> {taxonomia.Pai?.nome}</td>
+                        <td>{taxonomia.Denominacao?.nome}</td>
+                        <td>
+                          {taxonomia.Caracteristicas?.map(
+                            (caracteristica, key) => (
+                              <Table striped key={key} bordered hover>
+                                <tbody>
+                                  <tr>
+                                    <td>{caracteristica.Atributo.nome} </td>
+                                    <td>{caracteristica.nome}</td>
+                                    <td>{caracteristica.descricao}</td>
+                                    <td></td>
+                                  </tr>
+                                </tbody>
+                              </Table>
+                            )
+                          )}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
                 ))}
               </Container>
             ) : this.state.tipo === "respostaAtributoCaracteristica" ? (
