@@ -44,47 +44,58 @@ class PaginaInicial extends React.Component {
         {this.state.resultados ? (
           <>
             {this.state.tipo === "respostaTaxonomia" ? (
-              <Container style={{ backgroundColor: "white" }}>
+              <Container fluid style={{ backgroundColor: "white" }}>
                 {console.log(this.state.resultados)}
                 {this.state.resultados.map((taxonomia, key) => (
-                  <Table striped key={key} bordered hover>
+                  <Table striped key={key} bordered hover className="mt-5">
                     <thead>
                       <tr>
-                        <th colSpan="3">
-                          {taxonomia.FotoTaxonomias.map((foto, key) => (
-                            <Carousel key={key}>
-                              <Carousel.Item>
-                                <Image alt="foto" src={foto.conteudo} />
-                              </Carousel.Item>
-                            </Carousel>
-                          ))}
+                        <th colSpan="4" className="text-center">
+                           <Carousel fade>
+                            {taxonomia.foto.map(
+                            f=> <Carousel.Item>
+                              <img alt="foto" src={f} />
+                            </Carousel.Item>
+                          )}
+                          </Carousel>
                         </th>
                       </tr>
                       <tr>
-                        <th colSpan="3" className="text-center text-uppercase">
+                        <th colSpan="4" className="text-center text-uppercase">
                           {taxonomia.nome}
                         </th>
                       </tr>
                       <tr>
                         <th>Pertence a Taxonomia:</th>
                         <th> Denominação</th>
-                        <th> Caracteristicas</th>
+                        <th> Atributos</th>
+                        <th>Caracteristicas</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td> {taxonomia.Pai?.nome}</td>
-                        <td>{taxonomia.Denominacao?.nome}</td>
+                        <td> {taxonomia.pai?.nome}</td>
+                        <td>{taxonomia.denominacao?.nome}</td>
                         <td>
-                          {taxonomia.Caracteristicas?.map(
-                            (caracteristica, key) => (
+                          {taxonomia.atributos?.map((atributo, key) => (
+                            <Table striped key={key} bordered hover>
+                              <tbody>
+                                <tr>
+                                  <td>{atributo.identificacao}</td>
+                                  <td>{atributo.nome} </td>
+                                </tr>
+                              </tbody>
+                            </Table>
+                          ))}
+                        </td>
+                        <td>
+                          {taxonomia.caracteristicas?.map(
+                            (caracteristicas, key) => (
                               <Table striped key={key} bordered hover>
                                 <tbody>
                                   <tr>
-                                    <td>{caracteristica.Atributo.nome} </td>
-                                    <td>{caracteristica.nome}</td>
-                                    <td>{caracteristica.descricao}</td>
-                                    <td></td>
+                                    <td>{caracteristicas.nome}</td>
+                                    <td>{caracteristicas.descricao} </td>
                                   </tr>
                                 </tbody>
                               </Table>
@@ -97,7 +108,49 @@ class PaginaInicial extends React.Component {
                 ))}
               </Container>
             ) : this.state.tipo === "respostaAtributoCaracteristica" ? (
-              <Container>{console.log(this.state.resultados)}</Container>
+              <Container style={{ backgroundColor: "white" }}>
+                {this.state.resultados.map((atributo, key) => (
+                  <Table striped key={key} bordered hover>
+                    <thead>
+                      <tr colSpan="3" className="text-center text-uppercase">
+                        <td>{atributo.nome}</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          {atributo.Caracteristicas.map(
+                            (caracteristica, key) => (
+                              <Table striped key={key} bordered hover>
+                                <thead>
+                                  <tr>
+                                    <th>nome</th>
+                                    <th> descricao</th>
+                                    <th>Foto</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>{caracteristica.nome}</td>
+                                    <td>{caracteristica.descricao}</td>
+                                    <td>
+                                      {
+                                        caracteristica.FotoCaracteristicas
+                                          .conteudo
+                                      }
+                                    </td>
+                                  </tr>
+                                </tbody>
+                                {console.log(caracteristica)}
+                              </Table>
+                            )
+                          )}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                ))}
+              </Container>
             ) : null}
           </>
         ) : (

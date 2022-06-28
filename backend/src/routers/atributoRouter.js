@@ -3,11 +3,24 @@ import Atributo from "../models/museu/Atributo";
 import Caracteristica from "../models/museu/Caracteristica";
 import FotoCaracteristica from "../models/museu/FotoCaracteristica";
 import sequelize from "../database/museu";
+import { Op } from "sequelize";
 
 const atributoRouter = express.Router();
 atributoRouter.get("/respostaAtributoCaracteristica/", (req, res) => {
   Atributo.findAll({
-    include: [{ model: Caracteristica }],
+    where: {
+      nome: {
+        [Op.like]: `%${req.query.filter}%`,
+      },
+    },attributes: ["nome"],
+    include: [
+      { model: Caracteristica, attributes: ["nome", "descricao"],
+      include: {
+        model: FotoCaracteristica,
+        attributes: [ "conteudo"],
+      },
+      }
+    ]
   }).then((atributo) => {
     res.send(atributo);
   });

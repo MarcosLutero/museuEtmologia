@@ -17,7 +17,7 @@ taxonomiaRouter.get("/respostaTaxonomia/", (req, res) => {
     },
     attributes: ["nome"],
     include: [
-      { model: Taxonomia, as: "Pai", attributes: ["nome"]},
+      { model: Taxonomia, as: "Pai", attributes: ["nome"] },
       { model: Denominacao, attributes: ["nome"] },
       { model: FotoTaxonomia, attributes: ["nome", "conteudo"] },
       {
@@ -34,7 +34,26 @@ taxonomiaRouter.get("/respostaTaxonomia/", (req, res) => {
     ],
   }).then((taxonomia) => {
     {
-      res.send(taxonomia);
+      res.send(
+        taxonomia.map((taxonomia) => ({
+          nome: taxonomia.nome,
+          denominacao: taxonomia.Denominacao,
+          pai: taxonomia.Pai,
+          caracteristicas: taxonomia.Caracteristicas.map(
+            (caracteristicas) => (
+              {nome: caracteristicas.nome, descricao:caracteristicas.descricao}
+            )
+          ),
+          atributos: taxonomia.Caracteristicas.map(
+            (caractersiticas) => (
+              caractersiticas.Atributo
+            )
+          ),
+          foto: taxonomia.FotoTaxonomias.map((foto) =>
+            foto.conteudo.toString()
+          ),
+        }))
+      );
     }
   });
 });
