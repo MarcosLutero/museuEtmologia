@@ -39,15 +39,12 @@ taxonomiaRouter.get("/respostaTaxonomia/", (req, res) => {
           nome: taxonomia.nome,
           denominacao: taxonomia.Denominacao,
           pai: taxonomia.Pai,
-          caracteristicas: taxonomia.Caracteristicas.map(
-            (caracteristicas) => (
-              {nome: caracteristicas.nome, descricao:caracteristicas.descricao}
-            )
-          ),
+          caracteristicas: taxonomia.Caracteristicas.map((caracteristicas) => ({
+            nome: caracteristicas.nome,
+            descricao: caracteristicas.descricao,
+          })),
           atributos: taxonomia.Caracteristicas.map(
-            (caractersiticas) => (
-              caractersiticas.Atributo
-            )
+            (caractersiticas) => caractersiticas.Atributo
           ),
           foto: taxonomia.FotoTaxonomias.map((foto) =>
             foto.conteudo.toString()
@@ -64,20 +61,25 @@ taxonomiaRouter.get("/taxonomia/", (req, res) => {
       { model: Taxonomia, as: "Pai" },
       { model: Denominacao, attributes: ["nome"] },
     ],
-  }).then((taxonomia) => {
-    res.send({
-      headers: ["Nome", "Pertence a", "Denominação"],
-      rows: taxonomia.map((taxonomia) => ({
-        id: taxonomia.id,
-        columns: [
-          taxonomia.nome,
-          taxonomia.Pai?.nome ?? "(Raiz)",
-          taxonomia.Denominacao.nome,
-        ],
-        actions: ["Editar", "Excluir"],
-      })),
+  })
+    .then((taxonomia) => {
+      res.send({
+        headers: ["Nome", "Pertence a", "Denominação"],
+        rows: taxonomia.map((taxonomia) => ({
+          id: taxonomia.id,
+          columns: [
+            taxonomia.nome,
+            taxonomia.Pai?.nome ?? "(Raiz)",
+            taxonomia.Denominacao.nome,
+          ],
+          actions: ["Editar", "Excluir"],
+        })),
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
     });
-  });
 });
 
 taxonomiaRouter.get("/taxonomia/options", (req, res) => {

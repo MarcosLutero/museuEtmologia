@@ -1,0 +1,7 @@
+FROM node as backend_build
+COPY . /home/node/app
+WORKDIR /home/node/app
+ENV NODE_ENV=production
+RUN npm install --include dev
+RUN npm run build
+CMD ["npm", "run", "prod"]

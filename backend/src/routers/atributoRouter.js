@@ -12,15 +12,18 @@ atributoRouter.get("/respostaAtributoCaracteristica/", (req, res) => {
       nome: {
         [Op.like]: `%${req.query.filter}%`,
       },
-    },attributes: ["nome"],
+    },
+    attributes: ["nome"],
     include: [
-      { model: Caracteristica, attributes: ["nome", "descricao"],
-      include: {
-        model: FotoCaracteristica,
-        attributes: [ "conteudo"],
+      {
+        model: Caracteristica,
+        attributes: ["nome", "descricao"],
+        include: {
+          model: FotoCaracteristica,
+          attributes: ["conteudo"],
+        },
       },
-      }
-    ]
+    ],
   }).then((atributo) => {
     res.send(atributo);
   });
@@ -30,22 +33,27 @@ atributoRouter.get("/atributoCaracteristica/", (req, res) => {
   Atributo.findAll({
     include: [{ model: Caracteristica }],
     order: sequelize.literal("nome", "ASC"),
-  }).then((atributo) => {
-    res.send({
-      headers: ["Nome", "Identificação", "Nome da Caracteristica"],
-      rows: atributo.map((atributo) => ({
-        id: atributo.id,
-        columns: [
-          atributo.nome,
-          atributo.identificacao,
-          atributo.Caracteristicas.map(
-            (caracteristicas) => caracteristicas.nome
-          ).join("; "),
-        ],
-        actions: ["Editar", "Excluir"],
-      })),
+  })
+    .then((atributo) => {
+      res.send({
+        headers: ["Nome", "Identificação", "Nome da Caracteristica"],
+        rows: atributo.map((atributo) => ({
+          id: atributo.id,
+          columns: [
+            atributo.nome,
+            atributo.identificacao,
+            atributo.Caracteristicas.map(
+              (caracteristicas) => caracteristicas.nome
+            ).join("; "),
+          ],
+          actions: ["Editar", "Excluir"],
+        })),
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
     });
-  });
 });
 
 atributoRouter.get("/atributoCaracteristica/options", (req, res) => {
@@ -79,7 +87,6 @@ atributoRouter.get("/atributoCaracteristica/:id", (req, res) => {
         include: {
           model: FotoCaracteristica,
           attributes: ["id", "nome", "conteudo"],
-         
         },
       },
     ],
@@ -95,7 +102,7 @@ atributoRouter.get("/atributoCaracteristica/:id", (req, res) => {
 });
 
 atributoRouter.post("/atributoCaracteristica", (req, res) => {
-  Atributo.create(req.body,{ include: { model: FotoCaracteristica }})
+  Atributo.create(req.body, { include: { model: FotoCaracteristica } })
     .then((atributo) => {
       Promise.all([
         req.body.Caracteristicas.map((caracteristica) =>
@@ -105,9 +112,12 @@ atributoRouter.post("/atributoCaracteristica", (req, res) => {
           })
         ),
         req.body.FotoCaracteristica.map((fotoCaracteristica) =>
-        FotoCaracteristica.create({ ...fotoCaracteristica, TaxonomiumId: taxonomia.id })
-      )
-        ])
+          FotoCaracteristica.create({
+            ...fotoCaracteristica,
+            TaxonomiumId: taxonomia.id,
+          })
+        ),
+      ])
         .then(() => {
           res.send(atributo);
         })
